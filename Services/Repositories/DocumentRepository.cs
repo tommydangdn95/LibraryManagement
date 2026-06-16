@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Services.Dtos;
+using Services.Dtos.ApplicationDtos._Document;
 using Services.Enums;
 using Services.Models;
 using Services.Models.Criterias;
@@ -39,8 +40,6 @@ namespace Services.Repositories
         {
             var documents = _dbContext.Documents.Where(x => !x.IsDeleted);
 
-
-
             if (!string.IsNullOrEmpty(criteria.SearchName))
             {
                 documents = documents.Where(x => x.Title.Contains(criteria.SearchName));
@@ -67,6 +66,58 @@ namespace Services.Repositories
             var pagedResult = new PagedResult<Document>(items, count, criteria.Page, criteria.RowsPerPage);
             return pagedResult;
         }
+
+        public async Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria)
+        {
+            var documentsQuery = from doc in _dbContext.Documents
+                                join br in _dbContext.BorrowRecords
+                                    on doc.Id equals br.DocumentId into borrowGroup
+                                from borrow in borrowGroup.DefaultIfEmpty()
+                                where !doc.IsDeleted
+                                select new { doc, borrow };
+
+            if (criteria.BranchId.HasValue)
+            {
+                var documentIdsInBranch = _dbContext.DocumentBranchs.Where(db => db.BranchId == criteria.BranchId.Value)
+                                                    .Select(db => db.DocumentId);
+                documentsQuery = documentsQuery.Where(x => documentIdsInBranch.Contains(x.doc.Id));
+            }
+
+            if (!string.IsNullOrEmpty(criteria.SearchDocumentName))
+            {
+                documentsQuery = documentsQuery
+                    .Where(x => x.doc.Title.Contains(criteria.SearchDocumentName));
+            }
+
+            var totalCount = await documentsQuery
+                                    .Select(x => x.doc.Id)
+                                    .Distinct()
+                                    .CountAsync();
+
+            var items = await documentsQuery
+                        .Select(x => new DocumentItem
+                        {
+                            DocumentId = x.doc.Id,
+                            DocumentTitle = x.doc.Title,
+                            DocumentType = x.doc.DocumentType,
+                            DocumentStatus = x.doc.DocumentStatus,
+                            DocumentDescription = x.doc.Description,
+                            CoverImageUrl = x.doc.CoverImageUrl,
+                            PublishDate = x.doc.PublishDate,
+
+                            BorrowStatus = x.borrow != null ? x.borrow.BorrowStatus : (BorrowStatus?)null,
+                            BorrowDate = x.borrow != null ? x.borrow.BorrowDate : null,
+                            ReturnDate = x.borrow != null ? x.borrow.ReturnDate : null,
+                        })
+                        .Distinct()
+                        .Skip((criteria.Page - 1) * criteria.Page)
+                        .Take(criteria.RowsPerPage)
+                        .ToListAsync();
+
+            var pagedResult = new PagedResult<DocumentItem>(items, totalCount, criteria.Page, criteria.RowsPerPage);
+            return pagedResult;
+        }
+
 
         public async Task<bool> CreateDocumentBranch(DocumentBranch documentBranch)
         {

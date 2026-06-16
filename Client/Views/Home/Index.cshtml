@@ -1,8 +1,254 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    Layout = "_LayoutAdmin";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
+  <div class="row g-4">
+
+    <!-- ===== FILTER SIDEBAR ===== -->
+    <div class="col-lg-3">
+      <div class="card filter-card">
+        <div class="card-header d-flex justify-content-between align-items-center py-3 px-3">
+          <span><i class="bi bi-funnel me-2 text-primary"></i>Filters</span>
+          <button class="btn btn-sm btn-link btn-reset p-0 text-danger text-decoration-none">Reset all</button>
+        </div>
+        <div class="card-body px-3 py-3">
+
+          <!-- Search -->
+          <div class="filter-divider">Search</div>
+          <div class="input-group search-bar">
+            <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" class="form-control form-control-sm" placeholder="Document title..."/>
+          </div>
+
+          <!-- Branch -->
+          <div class="filter-divider mt-3">Branch</div>
+          <select class="form-select form-select-sm">
+            <option value="">All branches</option>
+            <option>Branch A – Downtown</option>
+            <option>Branch B – Uptown</option>
+            <option>Branch C – Westside</option>
+          </select>
+
+          <!-- Document Type -->
+          <div class="filter-divider mt-3">Document Type</div>
+          <div class="d-flex flex-column gap-1">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="typeAll" checked/>
+              <label class="form-check-label small" for="typeAll">All types</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="typeBook"/>
+              <label class="form-check-label small" for="typeBook"><i class="bi bi-book text-primary me-1"></i>Book</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="typeMag"/>
+              <label class="form-check-label small" for="typeMag"><i class="bi bi-newspaper text-warning me-1"></i>Magazine</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="typeThesis"/>
+              <label class="form-check-label small" for="typeThesis"><i class="bi bi-file-earmark-text text-success me-1"></i>Thesis</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="typeReport"/>
+              <label class="form-check-label small" for="typeReport"><i class="bi bi-file-earmark-bar-graph text-danger me-1"></i>Report</label>
+            </div>
+          </div>
+
+          <!-- Availability -->
+          <div class="filter-divider mt-3">Availability</div>
+          <div class="d-flex flex-column gap-1">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="avail" id="availAll" checked/>
+              <label class="form-check-label small" for="availAll">All</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="avail" id="availYes"/>
+              <label class="form-check-label small" for="availYes"><span class="badge badge-avail">Available</span></label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="avail" id="availBorrowed"/>
+              <label class="form-check-label small" for="availBorrowed"><span class="badge badge-borrow">Borrowed</span></label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="avail" id="availNo"/>
+              <label class="form-check-label small" for="availNo"><span class="badge badge-unavail">Unavailable</span></label>
+            </div>
+          </div>
+
+          <!-- Publish Date Range -->
+          <div class="filter-divider mt-3">Publish Date</div>
+          <div class="d-flex flex-column gap-2">
+            <div>
+              <label class="form-label small text-muted mb-1">From</label>
+              <input type="date" class="form-control form-control-sm"/>
+            </div>
+            <div>
+              <label class="form-label small text-muted mb-1">To</label>
+              <input type="date" class="form-control form-control-sm"/>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm w-100 mt-3">
+            <i class="bi bi-search me-1"></i>Apply Filters
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DOCUMENT LIST ===== -->
+    <div class="col-lg-9">
+
+      <!-- Sort bar -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-primary">All</button>
+          <button class="btn btn-sm btn-outline-secondary">Books</button>
+          <button class="btn btn-sm btn-outline-secondary">Magazines</button>
+          <button class="btn btn-sm btn-outline-secondary">Thesis</button>
+        </div>
+        <select class="form-select form-select-sm w-auto">
+          <option>Sort: Newest</option>
+          <option>Sort: Oldest</option>
+          <option>Sort: Title A–Z</option>
+          <option>Sort: Title Z–A</option>
+        </select>
+      </div>
+
+      <!-- Cards -->
+      <div class="d-flex flex-column gap-3">
+
+        <!-- Card 1 -->
+        <div class="card doc-card">
+          <div class="card-body d-flex gap-3 align-items-start p-3">
+            <div class="cover-placeholder flex-shrink-0"><i class="bi bi-book"></i></div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <h6 class="mb-1 fw-semibold">Clean Code: A Handbook of Agile Software Craftsmanship</h6>
+                  <p class="text-muted small mb-2">Published: Jan 2023 &nbsp;·&nbsp; Branch: Downtown A</p>
+                </div>
+                <span class="badge badge-avail rounded-pill px-3 py-1">Available</span>
+              </div>
+              <p class="small text-muted mb-2" style="line-height:1.5">A guide to writing clean, maintainable code with practical advice on naming, functions, and best practices for software engineers.</p>
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <span class="badge badge-type rounded-pill">Book</span>
+                  <span class="badge bg-light text-secondary rounded-pill">Software Engineering</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                  <i class="bi bi-send me-1"></i>Borrow Request
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card doc-card">
+          <div class="card-body d-flex gap-3 align-items-start p-3">
+            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">
+              <i class="bi bi-newspaper" style="color:#be185d;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <h6 class="mb-1 fw-semibold">IEEE Spectrum – March 2024</h6>
+                  <p class="text-muted small mb-2">Published: Mar 2024 &nbsp;·&nbsp; Branch: Uptown B</p>
+                </div>
+                <span class="badge badge-borrow rounded-pill px-3 py-1">Borrowed</span>
+              </div>
+              <p class="small text-muted mb-2" style="line-height:1.5">Monthly technology magazine covering the latest breakthroughs in electronics, computing, and engineering worldwide.</p>
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <span class="badge badge-type rounded-pill">Magazine</span>
+                  <span class="badge bg-light text-secondary rounded-pill">Technology</span>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" disabled>
+                  <i class="bi bi-clock me-1"></i>Unavailable
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card doc-card">
+          <div class="card-body d-flex gap-3 align-items-start p-3">
+            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">
+              <i class="bi bi-file-earmark-text" style="color:#065f46;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <h6 class="mb-1 fw-semibold">Deep Learning Approaches for Natural Language Processing</h6>
+                  <p class="text-muted small mb-2">Published: Jun 2022 &nbsp;·&nbsp; Branch: Westside C</p>
+                </div>
+                <span class="badge badge-avail rounded-pill px-3 py-1">Available</span>
+              </div>
+              <p class="small text-muted mb-2" style="line-height:1.5">A doctoral thesis exploring transformer-based architectures and their application to multilingual NLP tasks and text classification.</p>
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <span class="badge badge-type rounded-pill">Thesis</span>
+                  <span class="badge bg-light text-secondary rounded-pill">AI / ML</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                  <i class="bi bi-send me-1"></i>Borrow Request
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card doc-card">
+          <div class="card-body d-flex gap-3 align-items-start p-3">
+            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+              <i class="bi bi-file-earmark-bar-graph" style="color:#92400e;"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <h6 class="mb-1 fw-semibold">Annual ICT Industry Report 2023</h6>
+                  <p class="text-muted small mb-2">Published: Dec 2023 &nbsp;·&nbsp; Branch: Downtown A</p>
+                </div>
+                <span class="badge badge-unavail rounded-pill px-3 py-1">Unavailable</span>
+              </div>
+              <p class="small text-muted mb-2" style="line-height:1.5">Comprehensive report on ICT market trends, investment data, and digital transformation statistics across Southeast Asia for 2023.</p>
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex gap-2">
+                  <span class="badge badge-type rounded-pill">Report</span>
+                  <span class="badge bg-light text-secondary rounded-pill">Industry</span>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" disabled>
+                  <i class="bi bi-x-circle me-1"></i>Unavailable
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-4">
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">...</a></li>
+            <li class="page-item"><a class="page-link" href="#">12</a></li>
+            <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+          </ul>
+        </nav>
+      </div>
+
+    </div>
+  </div>

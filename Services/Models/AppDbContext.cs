@@ -21,6 +21,7 @@ namespace Services.Models
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentBranch> DocumentBranchs { get; set; }
+        public DbSet<BorrowRecord> BorrowRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

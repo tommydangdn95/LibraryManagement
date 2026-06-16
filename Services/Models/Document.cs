@@ -6,8 +6,10 @@ namespace Services.Models
     {
         public string Title { get; set; }
         public DocumentType DocumentType { get; set; }
+        public DocumentStatus DocumentStatus { get; set; }
         public string? Description { get; set; }
         public string? CoverImageUrl { get; set; }
+        public DateTime PublishDate { get; set; }
         public ICollection<DocumentBranch> DocumentBranches { get; set; }
     }
 }

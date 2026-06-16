@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Services.ViewModels._AccountViewModels
+@using Services.Models._Users
+@model LoginViewModel
+@inject SignInManager<AppUser> SignInManager
+
+<div class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container-xl px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-11">
+                            <!-- Social login form-->
+                            <div class="card my-5">
+                                <div class="card-body p-5 text-center">
+                                    <div class="h3 fw-light mb-3">Sign In</div>
+                                    <!-- Social login links-->
+                                    <a class="btn btn-icon btn-facebook mx-1" href="#!"><i class="fab fa-facebook-f fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-github mx-1" href="#!"><i class="fab fa-github fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-google mx-1" href="#!"><i class="fab fa-google fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-twitter mx-1" href="#!"><i class="fab fa-twitter fa-fw fa-sm text-white"></i></a>
+                                </div>
+                                <hr class="my-0" />
+                                <div class="card-body p-5">
+                                    <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                                        <!-- Form Group (email address)-->
+                                        <div class="mb-3">
+                                            <label asp-for="Email" class="text-gray-600 small">Email address</label>
+                                            <input asp-for="Email" class="form-control form-control-solid" type="text" placeholder="" aria-label="Email Address" aria-describedby="emailExample" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <!-- Form Group (password)-->
+                                        <div class="mb-3">
+                                            <label asp-for="Password" class="text-gray-600 small" for="passwordExample">Password</label>
+                                            <input asp-for="Password" class="form-control form-control-solid" type="password" placeholder="" aria-label="Password" aria-describedby="passwordExample" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <!-- Form Group (forgot password link)-->
+                                        <div class="mb-3">
+                                            <a asp-action="ForgotPassword" class="small">Forgot your password?</a>
+                                        </div>
+                                        <!-- Form Group (login box)-->
+                                        <div class="d-flex align-items-center justify-content-between mb-0">
+                                            <div class="form-check">
+                                                <label asp-for="RememberMe" class="form-check-label">
+                                                    @Html.DisplayNameFor(m => m.RememberMe)
+                                                </label>
+                                                <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" href="dashboard-1.html">Login</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr class="my-0" />
+                                <div class="card-body px-5 py-4">
+                                    <div class="small text-center">
+                                        New user?
+                                        <a href="auth-register-social.html">Create an account!</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <div id="layoutAuthentication_footer">
+            <footer class="footer-admin mt-auto footer-dark">
+                <div class="container-xl px-4">
+                    <div class="row">
+                        <div class="col-md-6 small">Copyright &copy; Your Website 2021</div>
+                        <div class="col-md-6 text-md-end small">
+                            <a href="#!">Privacy Policy</a>
+                            &middot;
+                            <a href="#!">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

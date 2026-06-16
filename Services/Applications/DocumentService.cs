@@ -1,8 +1,13 @@
-﻿using Services.Dtos;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
+using Services.Dtos;
+using Services.Dtos.ApplicationDtos._Document;
 using Services.Enums;
+using Services.Models.Criterias;
 using Services.Repositories;
 using Services.Utils;
 using Services.ViewModels._DocumentViewModels;
+using Services.ViewModels.Clients._DocumentViewModels;
 
 namespace Services.Applications
 {
@@ -45,6 +50,32 @@ namespace Services.Applications
             }
 
             return Result.Success($"Create new document branch successfully");
+        }
+
+        public async Task<IResultData<DocumentList>> GetListDocument(DocumentListQuery query)
+        {
+            var criteria = new GetDocumentItemCriteria()
+            {
+                BranchId = query.BranchId,
+                SearchDocumentName = query.SearchDocumentName,
+                DocumentType = query.DocumentType,
+                DocumentStatus = query.DocumentStatus,
+                BorrowStatus = query.BorrowStatus,
+                StartDate = query.StartDate,
+                EndDate = query.EndDate,
+                Page = query.Page,
+                RowsPerPage = query.RowsPerPage
+            };
+
+            var pageResult = await _documentRepository.GetListDocumentItem(criteria);
+            var documentList = new DocumentList()
+            {
+                Items = pageResult.Items,
+                Paging = Paging.GetPaging(query.Page, query.RowsPerPage, pageResult.TotalCount)
+            };
+
+
+            return ResultData<DocumentList>.SuccessData("Get list item successfully", documentList);
         }
     }
 }
