@@ -1,0 +1,2 @@
+dotnet ef migrations add initDb --project Services/Services.csproj --startup-project Admin/Admin.csproj
+dotnet ef database update initDb --project Services/Services.csproj --startup-project Admin/Admin.csproj
