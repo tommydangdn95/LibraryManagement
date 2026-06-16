@@ -1,0 +1,70 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@using Services.ViewModels._BranchViewModels
+@model CreateBranch
+
+<header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+    <div class="container-xl px-4">
+        <div class="page-header-content">
+            <div class="row align-items-center justify-content-between pt-3">
+                <div class="col-auto mb-3">
+                    <h1 class="page-header-title">
+                        <div class="page-header-icon"><i data-feather="map-pin"></i></div>
+                        Create new Branch
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div class="container-xl px-4 mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form asp-controller="Branch" asp-action="create" method="post" class="form-horizontal" role="form">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="small mb-1">Branch Library Name: </label>
+                                <input asp-for="Name" class="form-control" type="text" placeholder="Enter " autocomplete="false" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Address" class="small mb-1">Address</label>
+                                <input asp-for="Address" class="form-control" type="text" placeholder="Enter Address" autocomplete="false" />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Phone" class="small mb-1">Enter Phone Number</label>
+                                <input asp-for="Phone" class="form-control" type="text" placeholder="Enter Phone Number" autocomplete="false" />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Email" class="small mb-1">Email</label>
+                                <input asp-for="Email" class="form-control" type="email" placeholder="Enter email" />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Description" class="small mb-1">Description </label>
+                                <textarea asp-for="Description" class="form-control" placeholder="Branch description" style="resize: none;"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
