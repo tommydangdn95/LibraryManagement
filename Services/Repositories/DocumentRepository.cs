@@ -5,6 +5,7 @@ using Services.Enums;
 using Services.Models;
 using Services.Models.Criterias;
 using Services.Utils;
+using Services.ViewModels._DocumentViewModels;
 
 namespace Services.Repositories
 {
@@ -35,6 +36,58 @@ namespace Services.Repositories
             var document = await _dbContext.Documents.FirstOrDefaultAsync(x => x.Id == documentId && !x.IsDeleted);
             return document;
         }
+
+
+        public async Task<bool> CreateDocumentBranch(DocumentBranch documentBranch)
+        {
+            await _dbContext.DocumentBranchs.AddAsync(documentBranch);
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> DeleteAsync(Guid documentId, Guid submitUserId)
+        {
+            var document = await GetByIdAsync(documentId);
+            if (document == null)
+            {
+                return false;
+            }
+
+            document.IsDeleted = true;
+            document.DeletedDate = DateTime.Now;
+            document.DeleteBy = submitUserId;
+
+            return await UpdateAsync(document);
+        }
+
+        public async Task<bool> UpdateDocumentBranch(Guid documentId, Guid updateBranchId, Guid submitUserId)
+        {
+            var result = await _dbContext.DocumentBranchs.Where(db => db.DocumentId == documentId)
+                                    .ExecuteUpdateAsync(s => s
+                                    .SetProperty(db => db.BranchId, updateBranchId)
+                                    .SetProperty(db => db.UpdatedBy, submitUserId)
+                                    .SetProperty(db => db.UpdatedDate, DateTime.Now));
+            return result > 0;
+        }
+
+        public async Task<bool> UpdateDocumentBranch(DocumentBranch documentBranch)
+        {
+            _dbContext.DocumentBranchs.Update(documentBranch);
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+        public async Task<bool> DeleteDocumentBranch(Guid documentId, Guid submitUserId)
+        {
+            var result = await _dbContext.DocumentBranchs.Where(db => db.DocumentId == documentId)
+                                    .ExecuteUpdateAsync(s => s
+                                     .SetProperty(db => db.IsDeleted, true)
+                                    .SetProperty(db => db.DeleteBy, submitUserId)
+                                    .SetProperty(db => db.DeletedDate, DateTime.Now));
+            return result > 0;
+        }
+
 
         public async Task<PagedResult<Document>> GetAllAsync(GetDocumentListCriteria criteria)
         {
@@ -67,6 +120,14 @@ namespace Services.Repositories
             return pagedResult;
         }
 
+
+        public async Task<DocumentBranch> GetDocumentBranchAsync(Guid documentId, Guid branchId)
+        {
+            return await _dbContext.DocumentBranchs.FirstOrDefaultAsync(db => db.DocumentId == documentId && db.BranchId == branchId);
+        }
+
+
+        #region Client
         public async Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria)
         {
             var documentsQuery = from doc in _dbContext.Documents
@@ -123,12 +184,6 @@ namespace Services.Repositories
             return pagedResult;
         }
 
-
-        public async Task<bool> CreateDocumentBranch(DocumentBranch documentBranch)
-        {
-            await _dbContext.DocumentBranchs.AddAsync(documentBranch);
-            var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
-        }
+        #endregion
     }
 }

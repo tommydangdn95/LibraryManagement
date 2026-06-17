@@ -24,6 +24,9 @@ namespace Services.Applications
             var document = new Models.Document()
             {
                 Title = createDocument.Title,
+                Description = createDocument.Description,
+                DocumentStatus = DocumentStatus.Available,
+                PublishDate = createDocument.PublishDate,
                 DocumentType = createDocument.DocumentTypeId.ToEnum<DocumentType>()!.Value,
                 CreatedDate = DateTime.Now,
                 CreatedBy = submitUserId
@@ -87,6 +90,55 @@ namespace Services.Applications
 
 
             return ResultData<DocumentList>.SuccessData("Get list item successfully", documentList);
+        }
+
+        public async Task<IResult> UpdateAsync(UpdateDocument updateDocument, Guid submitUserId)
+        {
+            var document = await _documentRepository.GetByIdAsync(updateDocument.DocumenId);
+            if (document == null)
+            {
+                return Result.Failed("Document not found");
+            }
+
+            document.Title = updateDocument.Title;
+            document.Description = updateDocument.Description;
+            document.CoverImageUrl = updateDocument.CoverImageUrl;
+            document.PublishDate = updateDocument.PublishDate;
+            document.UpdatedDate = DateTime.Now;
+            document.UpdatedBy = submitUserId;
+
+            var result = await _documentRepository.UpdateAsync(document);
+            if (!result)
+            {
+                return Result.Failed("Could not update document");
+            }
+
+            result = await _documentRepository.UpdateDocumentBranch(updateDocument.DocumenId, updateDocument.BranchId, submitUserId);
+            if (!result)
+            {
+                return Result.Failed("Could not update document branch");
+            }
+
+            return Result.Failed("Update document successfully");
+        }
+
+        public async Task<IResult> DeleteAsync(Guid deleteDocumentId, Guid submitUserId)
+        {
+            var deleteDocument = await _documentRepository.GetByIdAsync(deleteDocumentId);
+            if (deleteDocument == null)
+            {
+                return Result.Failed("Document not found");
+            }
+
+            var result = await _documentRepository.DeleteAsync(deleteDocumentId, submitUserId);
+            if (!result)
+            {
+                return Result.Failed($"Failed to delete document");
+            }
+
+            result = await _documentRepository.DeleteDocumentBranch(deleteDocumentId, submitUserId);
+
+            return Result.Success($"Delete document successfully");
         }
     }
 }

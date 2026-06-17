@@ -14,6 +14,13 @@ namespace Services.Repositories
     {
         public Task<bool> CreateAsync(Document document);
         public Task<bool> CreateDocumentBranch(DocumentBranch documentBranch);
+        public Task<bool> UpdateDocumentBranch(DocumentBranch documentBranch);
+        public Task<DocumentBranch> GetDocumentBranchAsync(Guid documentId, Guid branchId);
+        public Task<bool> UpdateDocumentBranch(Guid documentId, Guid updateBranchId, Guid submitUserId);
+        public Task<bool> DeleteDocumentBranch(Guid documentId, Guid submitUserId);
+        public Task <bool> UpdateAsync(Document document);
+        public Task<bool> DeleteAsync(Guid documentId, Guid submitUserId);
+        public Task<Document> GetByIdAsync(Guid documentId);
 
         #region Client
         public Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria);
