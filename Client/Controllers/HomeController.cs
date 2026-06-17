@@ -1,10 +1,14 @@
 using Client.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Services.Applications;
 using Services.Dtos.Apis;
+using Services.Enums;
+using Services.Utils;
 using Services.ViewModels.Clients._DocumentViewModels;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Client.Controllers
@@ -21,12 +25,21 @@ namespace Client.Controllers
             _branchService = branchService;
         }
 
-        [HttpGet]
+        [HttpGet("")]    
+        [HttpGet("/")]
         public async Task<IActionResult> Index()
         {
             var vm = new DocumentListQuery();
             var result = await _branchService.GetAllBranchAsync();
+            vm.BranchListItem = result.Data.Select(x => new SelectListItem
+            {
+                Value = x.BranchId.ToString(),
+                Text = x.Name
+            }).ToList();
 
+            var documentTypes = typeof(DocumentType).ToItemList();
+            vm.ListDocumentType = documentTypes;
+            vm.ListBorrowStatus.AddRange(typeof(BorrowStatusDisplay).ToItemList());
 
             return View(vm);
         }

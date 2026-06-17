@@ -6,6 +6,8 @@ namespace Services.ViewModels.Clients._DocumentViewModels
     {
         public Guid? BranchId { get; set; }
         public List<SelectListItem> BranchListItem { get; set; }
+        public List<(int value, string label)> ListDocumentType { get; set; }
+        public List<(int value, string label)> ListBorrowStatus { get; set;  } 
         public string SearchDocumentName { get; set; }
         public int? DocumentType { get; set; }
         public int? DocumentStatus { get; set; }
@@ -18,6 +20,8 @@ namespace Services.ViewModels.Clients._DocumentViewModels
         public DocumentListQuery()
         {
             this.BranchListItem = new List<SelectListItem>();
+            this.ListDocumentType = new List<(int, string)>();
+            this.ListBorrowStatus = new List<(int, string)>();
         }
     }
 }

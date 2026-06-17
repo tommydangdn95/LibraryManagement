@@ -26,13 +26,6 @@
         box-shadow: 0 6px 20px rgba(0,0,0,.12);
     }
 
-    .doc-card .cover {
-        width: 90px;
-        min-height: 120px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
     .doc-card .cover-placeholder {
         width: 90px;
         min-height: 120px;
@@ -112,4 +105,8 @@
 
 .pagination .page-item.active .page-link {
     background-color: #4338ca;
+}
+
+#loadingSpinner {
+    padding: 60px 0;
 }

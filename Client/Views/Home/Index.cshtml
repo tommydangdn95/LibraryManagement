@@ -8,141 +8,131 @@
 }
 
 @using Services.ViewModels.Clients._DocumentViewModels
+@using Services.Utils
 @model DocumentListQuery
 
-  <div class="row g-4">
+<div class="row g-4">
 
     <!-- ===== FILTER SIDEBAR ===== -->
     <div class="col-lg-3">
-      <div class="card filter-card">
-        <div class="card-header d-flex justify-content-between align-items-center py-3 px-3">
-          <span><i class="bi bi-funnel me-2 text-primary"></i>Filters</span>
-          <button class="btn btn-sm btn-link btn-reset p-0 text-danger text-decoration-none">Reset all</button>
+        <div class="card filter-card">
+            <div class="card-header d-flex justify-content-between align-items-center py-3 px-3">
+                <span><i class="bi bi-funnel me-2 text-primary"></i>Filters</span>
+                <button class="btn btn-sm btn-link btn-reset p-0 text-danger text-decoration-none">Reset all</button>
+            </div>
+            <div class="card-body px-3 py-3">
+
+                <!-- Search -->
+                <div class="filter-divider">Search</div>
+                <div class="input-group search-bar">
+                    <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+                    <input asp-for="SearchDocumentName" type="text" class="form-control form-control-sm" placeholder="Document title..." />
+                </div>
+
+                <!-- Branch -->
+                <div class="filter-divider mt-3">Branch</div>
+                <select asp-for="BranchId" asp-items="Model.BranchListItem" class="form-select form-select-sm">
+                    <option value="">-- All branches --</option>
+                </select>
+
+                <!-- Document Type -->
+                <div class="filter-divider mt-3">Document Type</div>
+                <div class="d-flex flex-column gap-1" id="listDocumentType">
+                    @foreach (var (documentType, index) in Model.ListDocumentType.WithIndex())
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="@documentType.value" id="doc_@(documentType.value)_@index" />
+                            <label class="form-check-label small" for="doc_@(documentType.value)_@index">
+                                <i class="bi bi-book text-primary me-1"></i>
+                                @documentType.label
+                            </label>
+                        </div>
+                    }
+                </div>
+
+
+                <!-- Availability -->
+                <div class="filter-divider mt-3">Availability</div>
+                <div class="d-flex flex-column gap-1" id="listBorrowStatusDisplay">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="borrowStatus" id="availAll" checked />
+                        <label class="form-check-label small" for="availAll">All</label>
+                    </div>
+                    @foreach (var (borrowStatus, index) in Model.ListBorrowStatus.WithIndex())
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="@borrowStatus.value" name="borrowStatus" id="borrow_@(borrowStatus.value)_@index" />
+                            <label class="form-check-label small" for="borrow_@(borrowStatus.value)_@index">@borrowStatus.label</label>
+                        </div>
+                    } 
+                </div>
+
+                <!-- Publish Date Range -->
+                <div class="filter-divider mt-3">Publish Date</div>
+                <div class="d-flex flex-column gap-2">
+                    <div>
+                        <label class="form-label small text-muted mb-1" for="StartDate">From</label>
+                        <input type="date" class="form-control form-control-sm" asp-for="StartDate" />
+                    </div>
+                    <div>
+                        <label class="form-label small text-muted mb-1" for="EndDate">To</label>
+                        <input type="date" class="form-control form-control-sm" asp-for="EndDate" />
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-sm w-100 mt-3" id="filterBtn">
+                    <i class="bi bi-search me-1"></i>Apply Filters
+                </button>
+
+            </div>
         </div>
-        <div class="card-body px-3 py-3">
-
-          <!-- Search -->
-          <div class="filter-divider">Search</div>
-          <div class="input-group search-bar">
-            <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" id="searchText" class="form-control form-control-sm" placeholder="Document title..."/>
-          </div>
-
-          <!-- Branch -->
-          <div class="filter-divider mt-3">Branch</div>
-          <select class="form-select form-select-sm">
-            <option value="">All branches</option>
-            <option>Branch A – Downtown</option>
-            <option>Branch B – Uptown</option>
-            <option>Branch C – Westside</option>
-          </select>
-
-          <!-- Document Type -->
-          <div class="filter-divider mt-3">Document Type</div>
-          <div class="d-flex flex-column gap-1">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="typeAll" checked/>
-              <label class="form-check-label small" for="typeAll">All types</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="typeBook"/>
-              <label class="form-check-label small" for="typeBook"><i class="bi bi-book text-primary me-1"></i>Book</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="typeMag"/>
-              <label class="form-check-label small" for="typeMag"><i class="bi bi-newspaper text-warning me-1"></i>Magazine</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="typeThesis"/>
-              <label class="form-check-label small" for="typeThesis"><i class="bi bi-file-earmark-text text-success me-1"></i>Thesis</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="typeReport"/>
-              <label class="form-check-label small" for="typeReport"><i class="bi bi-file-earmark-bar-graph text-danger me-1"></i>Report</label>
-            </div>
-          </div>
-
-          <!-- Availability -->
-          <div class="filter-divider mt-3">Availability</div>
-          <div class="d-flex flex-column gap-1">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="avail" id="availAll" checked/>
-              <label class="form-check-label small" for="availAll">All</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="avail" id="availYes"/>
-              <label class="form-check-label small" for="availYes"><span class="badge badge-avail">Available</span></label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="avail" id="availBorrowed"/>
-              <label class="form-check-label small" for="availBorrowed"><span class="badge badge-borrow">Borrowed</span></label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="avail" id="availNo"/>
-              <label class="form-check-label small" for="availNo"><span class="badge badge-unavail">Unavailable</span></label>
-            </div>
-          </div>
-
-          <!-- Publish Date Range -->
-          <div class="filter-divider mt-3">Publish Date</div>
-          <div class="d-flex flex-column gap-2">
-            <div>
-              <label class="form-label small text-muted mb-1">From</label>
-              <input type="date" class="form-control form-control-sm"/>
-            </div>
-            <div>
-              <label class="form-label small text-muted mb-1">To</label>
-              <input type="date" class="form-control form-control-sm"/>
-            </div>
-          </div>
-
-          <button class="btn btn-primary btn-sm w-100 mt-3">
-            <i class="bi bi-search me-1"></i>Apply Filters
-          </button>
-
-        </div>
-      </div>
     </div>
 
     <!-- ===== DOCUMENT LIST ===== -->
     <div class="col-lg-9">
 
-      <!-- Sort bar -->
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-primary">All</button>
-          <button class="btn btn-sm btn-outline-secondary">Books</button>
-          <button class="btn btn-sm btn-outline-secondary">Magazines</button>
-          <button class="btn btn-sm btn-outline-secondary">Thesis</button>
+        <!-- Sort bar -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-primary">All</button>
+                <button class="btn btn-sm btn-outline-secondary">Books</button>
+                <button class="btn btn-sm btn-outline-secondary">Magazines</button>
+                <button class="btn btn-sm btn-outline-secondary">Thesis</button>
+            </div>
+            <select class="form-select form-select-sm w-auto">
+                <option>Sort: Newest</option>
+                <option>Sort: Oldest</option>
+                <option>Sort: Title A–Z</option>
+                <option>Sort: Title Z–A</option>
+            </select>
         </div>
-        <select class="form-select form-select-sm w-auto">
-          <option>Sort: Newest</option>
-          <option>Sort: Oldest</option>
-          <option>Sort: Title A–Z</option>
-          <option>Sort: Title Z–A</option>
-        </select>
-      </div>
 
-      <div id="listDocument">
-      </div>
+        <div id="listDocument">
+            <div id="loadingSpinner" class="text-center d-none">
+                <div class="spinner-border text-primary" role="status" style="width:2.5rem;height:2.5rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted small mt-2 mb-0">Loading documents...</p>
+            </div>
+        </div>
 
-      <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-4">
-        <nav>
-          <ul class="pagination pagination-sm mb-0">
-            <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">...</a></li>
-            <li class="page-item"><a class="page-link" href="#">12</a></li>
-            <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
-          </ul>
-        </nav>
-      </div>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">12</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
 
     </div>
-  </div>
+</div>
 
 
 @section Scripts {

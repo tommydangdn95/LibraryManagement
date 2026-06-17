@@ -23,5 +23,16 @@ namespace Services.Utils
 
             return null;
         }
+
+        public static List<(int Value, string Name)> ToItemList(this Type enumType)
+        {
+            if (!enumType.IsEnum)
+                throw new ArgumentException($"{enumType.Name} is not an enum type.");
+
+            return Enum.GetValues(enumType)
+                       .Cast<Enum>()
+                       .Select(e => (Convert.ToInt32(e), e.ToString()))
+                       .ToList();
+        }
     }
 }
