@@ -5,11 +5,11 @@ namespace Services.ViewModels.Clients._DocumentViewModels
 {
     public class DocumentList
     {
-        public List<DocumentItem> Items { get; set; }
+        public List<DocumentViewItem> Items { get; set; }
         public Paging Paging { get; set; }
         public DocumentList()
         {
-            this.Items = new List<DocumentItem>();
+            this.Items = new List<DocumentViewItem>();
             this.Paging = Paging.DefaultPaging();
         }
     }

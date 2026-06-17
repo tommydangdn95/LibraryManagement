@@ -70,11 +70,16 @@ namespace Services.Repositories
         public async Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria)
         {
             var documentsQuery = from doc in _dbContext.Documents
-                                join br in _dbContext.BorrowRecords
-                                    on doc.Id equals br.DocumentId into borrowGroup
-                                from borrow in borrowGroup.DefaultIfEmpty()
-                                where !doc.IsDeleted
-                                select new { doc, borrow };
+                                 join db in _dbContext.DocumentBranchs
+                                     on doc.Id equals db.DocumentId
+                                 join branch in _dbContext.Branchs
+                                     on db.BranchId equals branch.Id
+                                 join br in _dbContext.BorrowRecords
+                                     on doc.Id equals br.DocumentId into borrowGroup
+
+                                 from borrow in borrowGroup.DefaultIfEmpty()
+                                 where !doc.IsDeleted
+                                 select new { doc, branch, borrow };
 
             if (criteria.BranchId.HasValue)
             {
@@ -98,13 +103,13 @@ namespace Services.Repositories
                         .Select(x => new DocumentItem
                         {
                             DocumentId = x.doc.Id,
+                            BranchId = x.branch.Id,
                             DocumentTitle = x.doc.Title,
                             DocumentType = x.doc.DocumentType,
                             DocumentStatus = x.doc.DocumentStatus,
                             DocumentDescription = x.doc.Description,
                             CoverImageUrl = x.doc.CoverImageUrl,
                             PublishDate = x.doc.PublishDate,
-
                             BorrowStatus = x.borrow != null ? x.borrow.BorrowStatus : (BorrowStatus?)null,
                             BorrowDate = x.borrow != null ? x.borrow.BorrowDate : null,
                             ReturnDate = x.borrow != null ? x.borrow.ReturnDate : null,

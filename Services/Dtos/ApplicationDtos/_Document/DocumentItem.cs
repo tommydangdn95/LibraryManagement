@@ -11,6 +11,7 @@ namespace Services.Dtos.ApplicationDtos._Document
     {
         public Guid DocumentId { get; set; }
         public Guid BranchId { get; set; }
+        public string BranchName { get; set; }
         public string DocumentTitle { get; set; }
         public DocumentType DocumentType { get; set; }
         public DocumentStatus DocumentStatus { get; set; }

@@ -3,7 +3,7 @@ using Services.Models._Users;
 
 namespace Services.Models
 {
-    public class BorrowRecord : BaseModel
+    public class BorrowRequest : BaseModel
     {
         public Guid BorrowBranchId { get; set; }
         public Guid DocumentId { get; set; }
@@ -14,7 +14,6 @@ namespace Services.Models
         public BorrowStatus BorrowStatus { get; set; }
         public string Note { get; set; }
         public Guid ApprovedUserId { get; set; }
-
         public virtual Branch BorrowBranch { get; set; } 
         public virtual Branch ReturnBranch { get; set; } 
         public virtual Document Document { get; set; }

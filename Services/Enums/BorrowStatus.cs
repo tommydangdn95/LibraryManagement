@@ -2,8 +2,7 @@
 {
     public enum BorrowStatus
     {
-        Cancel = -1,
-        Available = 0,
+        Cancel = 0,
         Borrowing = 1,
         Returned = 2,
         Overdue = 3,

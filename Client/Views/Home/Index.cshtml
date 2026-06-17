@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/css/home.css" />
 }
 
+@using Services.ViewModels.Clients._DocumentViewModels
+@model DocumentListQuery
+
   <div class="row g-4">
 
     <!-- ===== FILTER SIDEBAR ===== -->
@@ -22,7 +25,7 @@
           <div class="filter-divider">Search</div>
           <div class="input-group search-bar">
             <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" class="form-control form-control-sm" placeholder="Document title..."/>
+            <input type="text" id="searchText" class="form-control form-control-sm" placeholder="Document title..."/>
           </div>
 
           <!-- Branch -->
@@ -120,119 +123,7 @@
         </select>
       </div>
 
-      <!-- Cards -->
-      <div class="d-flex flex-column gap-3">
-
-        <!-- Card 1 -->
-        <div class="card doc-card">
-          <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="cover-placeholder flex-shrink-0"><i class="bi bi-book"></i></div>
-            <div class="flex-grow-1">
-              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                  <h6 class="mb-1 fw-semibold">Clean Code: A Handbook of Agile Software Craftsmanship</h6>
-                  <p class="text-muted small mb-2">Published: Jan 2023 &nbsp;·&nbsp; Branch: Downtown A</p>
-                </div>
-                <span class="badge badge-avail rounded-pill px-3 py-1">Available</span>
-              </div>
-              <p class="small text-muted mb-2" style="line-height:1.5">A guide to writing clean, maintainable code with practical advice on naming, functions, and best practices for software engineers.</p>
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div class="d-flex gap-2">
-                  <span class="badge badge-type rounded-pill">Book</span>
-                  <span class="badge bg-light text-secondary rounded-pill">Software Engineering</span>
-                </div>
-                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                  <i class="bi bi-send me-1"></i>Borrow Request
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="card doc-card">
-          <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">
-              <i class="bi bi-newspaper" style="color:#be185d;"></i>
-            </div>
-            <div class="flex-grow-1">
-              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                  <h6 class="mb-1 fw-semibold">IEEE Spectrum – March 2024</h6>
-                  <p class="text-muted small mb-2">Published: Mar 2024 &nbsp;·&nbsp; Branch: Uptown B</p>
-                </div>
-                <span class="badge badge-borrow rounded-pill px-3 py-1">Borrowed</span>
-              </div>
-              <p class="small text-muted mb-2" style="line-height:1.5">Monthly technology magazine covering the latest breakthroughs in electronics, computing, and engineering worldwide.</p>
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div class="d-flex gap-2">
-                  <span class="badge badge-type rounded-pill">Magazine</span>
-                  <span class="badge bg-light text-secondary rounded-pill">Technology</span>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" disabled>
-                  <i class="bi bi-clock me-1"></i>Unavailable
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="card doc-card">
-          <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">
-              <i class="bi bi-file-earmark-text" style="color:#065f46;"></i>
-            </div>
-            <div class="flex-grow-1">
-              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                  <h6 class="mb-1 fw-semibold">Deep Learning Approaches for Natural Language Processing</h6>
-                  <p class="text-muted small mb-2">Published: Jun 2022 &nbsp;·&nbsp; Branch: Westside C</p>
-                </div>
-                <span class="badge badge-avail rounded-pill px-3 py-1">Available</span>
-              </div>
-              <p class="small text-muted mb-2" style="line-height:1.5">A doctoral thesis exploring transformer-based architectures and their application to multilingual NLP tasks and text classification.</p>
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div class="d-flex gap-2">
-                  <span class="badge badge-type rounded-pill">Thesis</span>
-                  <span class="badge bg-light text-secondary rounded-pill">AI / ML</span>
-                </div>
-                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                  <i class="bi bi-send me-1"></i>Borrow Request
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="card doc-card">
-          <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="cover-placeholder flex-shrink-0" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
-              <i class="bi bi-file-earmark-bar-graph" style="color:#92400e;"></i>
-            </div>
-            <div class="flex-grow-1">
-              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                  <h6 class="mb-1 fw-semibold">Annual ICT Industry Report 2023</h6>
-                  <p class="text-muted small mb-2">Published: Dec 2023 &nbsp;·&nbsp; Branch: Downtown A</p>
-                </div>
-                <span class="badge badge-unavail rounded-pill px-3 py-1">Unavailable</span>
-              </div>
-              <p class="small text-muted mb-2" style="line-height:1.5">Comprehensive report on ICT market trends, investment data, and digital transformation statistics across Southeast Asia for 2023.</p>
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div class="d-flex gap-2">
-                  <span class="badge badge-type rounded-pill">Report</span>
-                  <span class="badge bg-light text-secondary rounded-pill">Industry</span>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" disabled>
-                  <i class="bi bi-x-circle me-1"></i>Unavailable
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div id="listDocument">
       </div>
 
       <!-- Pagination -->
@@ -252,3 +143,8 @@
 
     </div>
   </div>
+
+
+@section Scripts {
+    <script src="~/js/applications/home/index.js"></script>
+}

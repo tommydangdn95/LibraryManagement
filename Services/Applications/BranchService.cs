@@ -51,7 +51,7 @@ namespace Services.Applications
                 IsActive = b.IsActive
             }).ToList();
 
-            return ResultData<List<BranchItemDto>>.SuccessData("Get all list branche successfully", branchDtos);
+            return ResultData<List<BranchItemDto>>.SuccessData("Get all list branch successfully", branchDtos);
         }
     }
 }

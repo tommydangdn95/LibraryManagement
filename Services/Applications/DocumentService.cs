@@ -70,7 +70,18 @@ namespace Services.Applications
             var pageResult = await _documentRepository.GetListDocumentItem(criteria);
             var documentList = new DocumentList()
             {
-                Items = pageResult.Items,
+                Items = pageResult.Items.Select(x => new DocumentViewItem()
+                {
+                    DocumentId = x.DocumentId,
+                    Branch = x.BranchName,
+                    DocumentTitle = x.DocumentTitle,
+                    DocumentDescription = x.DocumentDescription,
+                    DocumentStatus = x.DocumentStatus,
+                    CoverImageUrl = x.CoverImageUrl,
+                    DocumentType = x.DocumentType.ToString(),
+                    BorrowStatus = x.BorrowStatus,
+                    BorrowDate = x.BorrowDate,
+                }).ToList(),
                 Paging = Paging.GetPaging(query.Page, query.RowsPerPage, pageResult.TotalCount)
             };
 

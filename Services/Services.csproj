@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\_CategoryViewModels\" />
+    <Compile Remove="ViewModels\_CategoryViewModels\**" />
+    <EmbeddedResource Remove="ViewModels\_CategoryViewModels\**" />
+    <None Remove="ViewModels\_CategoryViewModels\**" />
   </ItemGroup>
 
   <ItemGroup>
