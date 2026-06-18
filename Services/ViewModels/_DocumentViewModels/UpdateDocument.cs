@@ -15,15 +15,17 @@ namespace Services.ViewModels._DocumentViewModels
         public List<SelectListItem> ListBranches { get; set; }
         public int DocumentTypeId { get; set; }
         public List<SelectListItem> ListDocumentType { get; set; }
+        public int? DocumentStatusId { get; set; }
+        public List<SelectListItem> ListDocumentStatus { get; set; }
         public string? Description { get; set; }
         public string? CoverImageUrl { get; set; }
-        public int? DocumentStatus { get; set; }
         public DateTime PublishDate { get; set; }
 
         public UpdateDocument()
         {
             this.ListBranches = new List<SelectListItem>();
             this.ListDocumentType = new List<SelectListItem>();
+            this.ListDocumentStatus = new List<SelectListItem>();
         }
     }
 }

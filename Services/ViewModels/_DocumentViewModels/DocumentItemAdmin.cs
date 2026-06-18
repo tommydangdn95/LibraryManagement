@@ -6,6 +6,7 @@ namespace Services.ViewModels._DocumentViewModels
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public Guid BranchId { get; set; }
         public string Branch { get; set; }
         public DocumentType DocumentType { get; set; }
         public DocumentStatus DocumentStatus { get; set; }

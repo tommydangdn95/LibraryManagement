@@ -30,7 +30,7 @@ namespace Services.ViewModels.Clients._DocumentViewModels
         {
             get
             {
-                return (DocumentStatus == DocumentStatus.Available) &&
+                return (DocumentStatus == DocumentStatus.Good) &&
                     (BorrowStatus == Enums.BorrowStatus.Cancel || BorrowStatus == Enums.BorrowStatus.Returned);
             }
         }

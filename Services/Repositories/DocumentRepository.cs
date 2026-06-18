@@ -211,6 +211,11 @@ namespace Services.Repositories
             return pagedResult;
         }
 
+        public Task<DocumentBranch> GetDocumentBranchAsync(Guid documentId)
+        {
+            return _dbContext.DocumentBranchs.FirstOrDefaultAsync(db => db.DocumentId == documentId);
+        }
+
         #endregion
     }
 }

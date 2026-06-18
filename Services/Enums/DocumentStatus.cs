@@ -2,7 +2,7 @@
 {
     public enum DocumentStatus
     {
-        Available = 0,
+        Good = 0,
         Lost = 1,
         Damaged = 2
     }

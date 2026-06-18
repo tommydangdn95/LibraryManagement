@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Dtos;
 using Services.Dtos.ApplicationDtos._Document;
 using Services.Enums;
+using Services.Models;
 using Services.Models.Criterias;
 using Services.Repositories;
 using Services.Utils;
@@ -26,7 +27,7 @@ namespace Services.Applications
             {
                 Title = createDocument.Title,
                 Description = createDocument.Description,
-                DocumentStatus = DocumentStatus.Available,
+                DocumentStatus = DocumentStatus.Good,
                 PublishDate = createDocument.PublishDate,
                 DocumentType = createDocument.DocumentTypeId.ToEnum<DocumentType>()!.Value,
                 CreatedDate = DateTime.Now,
@@ -72,6 +73,12 @@ namespace Services.Applications
             document.UpdatedDate = DateTime.Now;
             document.UpdatedBy = submitUserId;
 
+            if (updateDocument.DocumentStatusId.HasValue)
+            {
+                document.DocumentStatus = updateDocument.DocumentStatusId.Value.ToEnum<DocumentStatus>().Value;
+            }
+
+            document.DocumentType = updateDocument.DocumentTypeId.ToEnum<DocumentType>().Value;
             var result = await _documentRepository.UpdateAsync(document);
             if (!result)
             {
@@ -199,6 +206,12 @@ namespace Services.Applications
 
 
             return ResultData<DocumentList>.SuccessData("Get list item successfully", documentList);
+        }
+
+        public async Task<IResultData<DocumentBranch>> GetDocumentBranch(Guid documentId)
+        {
+            var item = await _documentRepository.GetDocumentBranchAsync(documentId);
+            return ResultData<DocumentBranch>.SuccessData("Get document branch successfully", item);
         }
 
         #endregion

@@ -73,35 +73,47 @@ namespace Admin.Controllers
         [HttpGet("edit/{id}")]
         public async Task<IActionResult> UpdateDocumentAsync(Guid id)
         {
-            var vm = new UpdateDocument();
-            vm.ListDocumentType = EnumHelper.ToSelectList<DocumentType>();
-            var listBranches = await _branchService.GetAllBranchAsync();
-            vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
-            {
-                Value = b.BranchId.ToString(),
-                Text = b.Name
-            }).ToList();
 
             var resultData = await _documentService.GetByIdAsync(id);
-            if (resultData.IsSuccess)
+
+            if (!resultData.IsSuccess)
             {
-                vm.Title = resultData.Data.Title;
-                vm.Description = resultData.Data.Description;
-                vm.PublishDate = resultData.Data.PublishDate;
-                vm.
+                throw new Exception("Edi document not found");
             }
 
-            return View(vm);
+            var vm = new UpdateDocument();
+            vm.DocumenId = resultData.Data.Id;
+            vm.ListDocumentType = EnumHelper.ToSelectList<DocumentType>();
+            vm.ListDocumentStatus = EnumHelper.ToSelectList<DocumentStatus>();
+            vm.Title = resultData.Data.Title;
+            vm.Description = resultData.Data.Description;
+            vm.PublishDate = resultData.Data.PublishDate;
+            vm.DocumentTypeId = (int)resultData.Data.DocumentType;
+            vm.DocumentStatusId = (int)resultData.Data.DocumentStatus;
+
+            var resultDocumentBranch = await _documentService.GetDocumentBranch(resultData.Data.Id);
+            if (resultDocumentBranch.IsSuccess)
+            {
+                var listBranches = await _branchService.GetAllBranchAsync();
+                vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
+                {
+                    Value = b.BranchId.ToString(),
+                    Text = b.Name,
+                }).ToList();
+                vm.BranchId = resultDocumentBranch.Data.BranchId;
+            }
+
+            return View("Edit", vm);
         }
 
 
-        [HttpPost("edit/{id}")]
+        [HttpPost("edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateDocumentAsync(Guid id, UpdateDocument updateDocument)
+        public async Task<IActionResult> UpdateDocumentAsync(UpdateDocument updateDocument)
         {
             if (updateDocument == null)
             {
-                return View(updateDocument);
+                return View("Edit", updateDocument);
             }
 
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -110,12 +122,11 @@ namespace Admin.Controllers
                 return Unauthorized("User not authenticated");
             }
 
-            updateDocument.DocumenId = id;
             var result = await _documentService.UpdateAsync(updateDocument, userId);
             if (!result.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, $"{result.Message}");
-                return View(updateDocument);
+                return View("Edit", updateDocument);
             }
 
             return RedirectToAction("Index");

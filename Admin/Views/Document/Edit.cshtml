@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+@using Services.ViewModels._DocumentViewModels
+@model UpdateDocument
+
+<header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+    <div class="container-xl px-4">
+        <div class="page-header-content">
+            <div class="row align-items-center justify-content-between pt-3">
+                <div class="col-auto mb-3">
+                    <h1 class="page-header-title">
+                        <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                        @Model.Title
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div class="container-xl px-4 mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form asp-controller="Document" asp-action="edit" method="post" class="form-horizontal" role="form">
+                            <div class="mb-3">
+                                <label asp-for="Title" class="small mb-1">Document Name: </label>
+                                <input asp-for="Title" class="form-control" type="text" placeholder="Enter " autocomplete="false" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="DocumentTypeId" class="small mb-1">Document Type: </label>
+                                <select asp-for="DocumentTypeId" asp-items="Model.ListDocumentType" class="form-select">
+                                    <option value="">-- Select Document Type --</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="BranchId" class="small mb-1">Branch Location</label>
+                                <select asp-for="BranchId" asp-items="Model.ListBranches" class="form-select">
+                                    <option value="">-- Select Branch Type --</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Description" class="small mb-1">Description</label>
+                                <textarea asp-for="Description" class="form-control" type="text" placeholder="Document description" style="resize: none;" rows="8"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="PublishDate" class="small mb-1">Publish Date</label>
+                                <input asp-for="PublishDate" class="form-control" type="date" />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="DocumentStatusId" class="small mb-1">Document Status: </label>
+                                <select asp-for="DocumentStatusId" asp-items="Model.ListDocumentStatus" class="form-select">
+                                    <option value="">-- Select Document Status --</option>
+                                </select>
+                            </div>
+                            <input type="hidden" asp-for="DocumenId" />
+                            <button class="btn btn-primary" type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
