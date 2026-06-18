@@ -6,6 +6,7 @@ using Services.Consts;
 using Services.Enums;
 using Services.Utils;
 using Services.ViewModels._DocumentViewModels;
+using Services.ViewModels.Clients._DocumentViewModels;
 using System.Security.Claims;
 
 namespace Admin.Controllers
@@ -67,5 +68,15 @@ namespace Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+        [HttpGet("getlist")]
+        public async Task<IActionResult> GetList(DocumentListAdminQuery query)
+        {
+            var result = await _documentService.GetListDocumentAdmin(query);
+
+            return PartialView("_ListDocumentAdmin", result.Data);
+        }
+
     }
 }

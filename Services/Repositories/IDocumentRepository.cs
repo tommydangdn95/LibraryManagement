@@ -21,6 +21,7 @@ namespace Services.Repositories
         public Task <bool> UpdateAsync(Document document);
         public Task<bool> DeleteAsync(Guid documentId, Guid submitUserId);
         public Task<Document> GetByIdAsync(Guid documentId);
+        public Task<PagedResult<DocumentItem>> GetAllAsync(GetDocumentListCriteria criteria);
 
         #region Client
         public Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria);

@@ -89,34 +89,60 @@ namespace Services.Repositories
         }
 
 
-        public async Task<PagedResult<Document>> GetAllAsync(GetDocumentListCriteria criteria)
+        public async Task<PagedResult<DocumentItem>> GetAllAsync(GetDocumentListCriteria criteria)
         {
-            var documents = _dbContext.Documents.Where(x => !x.IsDeleted);
+            var documents = from doc in _dbContext.Documents
+                            join db in _dbContext.DocumentBranchs
+                                on doc.Id equals db.DocumentId
+                            join branch in _dbContext.Branchs
+                                on db.BranchId equals branch.Id
+
+                            where !doc.IsDeleted
+                            select new { doc, branch };
 
             if (!string.IsNullOrEmpty(criteria.SearchName))
             {
-                documents = documents.Where(x => x.Title.Contains(criteria.SearchName));
+                documents = documents.Where(x => x.doc.Title.Contains(criteria.SearchName));
             }
 
 
             if (criteria.DocumentTypeId.HasValue)
             {
                 var documentType = criteria.DocumentTypeId.Value.ToEnum<DocumentType>();
-                documents = documents.Where(x => x.DocumentType == documentType);
+                documents = documents.Where(x => x.doc.DocumentType == documentType);
             }
 
             if (criteria.BranchId.HasValue)
             {
-                documents = documents.Include(d => d.DocumentBranches)
+                documents = documents.Include(d => d.doc.DocumentBranches)
                                      .ThenInclude(b => b.Branch)
-                                     .Where(x => x.DocumentBranches.Any(b => b.Branch.Id == criteria.BranchId.Value));
+                                     .Where(x => x.doc.DocumentBranches.Any(b => b.Branch.Id == criteria.BranchId.Value));
             }
 
-            var count = await documents.CountAsync();
-            var items = await documents.Skip((criteria.Page - 1) * criteria.RowsPerPage)
-                                 .Take(criteria.RowsPerPage).ToListAsync();
+            var totalCount = await documents.
+                                Select(x => x.doc.Id)
+                                .Distinct()
+                                .CountAsync();
 
-            var pagedResult = new PagedResult<Document>(items, count, criteria.Page, criteria.RowsPerPage);
+            var items = await documents
+                        .Select(x => new DocumentItem
+                        {
+                            DocumentId = x.doc.Id,
+                            BranchId = x.branch.Id,
+                            BranchName = x.branch.Name,
+                            DocumentTitle = x.doc.Title,
+                            DocumentType = x.doc.DocumentType,
+                            DocumentStatus = x.doc.DocumentStatus,
+                            DocumentDescription = x.doc.Description,
+                            CoverImageUrl = x.doc.CoverImageUrl,
+                            PublishDate = x.doc.PublishDate,
+                        })
+                        .Distinct()
+                        .Skip((criteria.Page - 1) * criteria.Page)
+                        .Take(criteria.RowsPerPage)
+                        .ToListAsync();
+
+            var pagedResult = new PagedResult<DocumentItem>(items, totalCount, criteria.Page, criteria.RowsPerPage);
             return pagedResult;
         }
 
@@ -135,7 +161,7 @@ namespace Services.Repositories
                                      on doc.Id equals db.DocumentId
                                  join branch in _dbContext.Branchs
                                      on db.BranchId equals branch.Id
-                                 join br in _dbContext.BorrowRecords
+                                 join br in _dbContext.BorrowRequest
                                      on doc.Id equals br.DocumentId into borrowGroup
 
                                  from borrow in borrowGroup.DefaultIfEmpty()
@@ -165,6 +191,7 @@ namespace Services.Repositories
                         {
                             DocumentId = x.doc.Id,
                             BranchId = x.branch.Id,
+                            BranchName = x.branch.Name,
                             DocumentTitle = x.doc.Title,
                             DocumentType = x.doc.DocumentType,
                             DocumentStatus = x.doc.DocumentStatus,

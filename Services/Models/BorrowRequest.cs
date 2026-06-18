@@ -14,10 +14,5 @@ namespace Services.Models
         public BorrowStatus BorrowStatus { get; set; }
         public string Note { get; set; }
         public Guid ApprovedUserId { get; set; }
-        public virtual Branch BorrowBranch { get; set; } 
-        public virtual Branch ReturnBranch { get; set; } 
-        public virtual Document Document { get; set; }
-        public virtual AppUser Borrower { get; set; }
-        public virtual AppUser ApprovedUser { get; set; }
     }
 }

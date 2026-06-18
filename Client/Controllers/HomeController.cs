@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Services.Applications;
-using Services.Dtos.Apis;
 using Services.Enums;
 using Services.Utils;
+using Services.ViewModels._DocumentViewModels;
 using Services.ViewModels.Clients._DocumentViewModels;
 using System.Diagnostics;
-using System.Net.NetworkInformation;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Client.Controllers
 {

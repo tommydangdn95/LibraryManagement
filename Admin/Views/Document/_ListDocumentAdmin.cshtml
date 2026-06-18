@@ -1,0 +1,26 @@
+﻿@using Services.ViewModels._DocumentViewModels
+@model DocumentListAdmin
+
+<div class="card-body">
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Type</th>
+                <th scope="col">Status</th>
+                <th scope="col">Branch</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.DocumentType.ToString()</td>
+                    <td>@item.DocumentStatus.ToString()</td>
+                    <td>@item.Branch</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
