@@ -46,7 +46,7 @@ namespace Admin.Controllers
 
         [HttpPost("create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateBranchAsync(CreateDocument createDocument)
+        public async Task<IActionResult> CreateDocumentAsync(CreateDocument createDocument)
         {
             if (createDocument == null)
             {
@@ -64,6 +64,58 @@ namespace Admin.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"{result.Message}");
                 return View(createDocument);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpGet("edit/{id}")]
+        public async Task<IActionResult> UpdateDocumentAsync(Guid id)
+        {
+            var vm = new UpdateDocument();
+            vm.ListDocumentType = EnumHelper.ToSelectList<DocumentType>();
+            var listBranches = await _branchService.GetAllBranchAsync();
+            vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
+            {
+                Value = b.BranchId.ToString(),
+                Text = b.Name
+            }).ToList();
+
+            var resultData = await _documentService.GetByIdAsync(id);
+            if (resultData.IsSuccess)
+            {
+                vm.Title = resultData.Data.Title;
+                vm.Description = resultData.Data.Description;
+                vm.PublishDate = resultData.Data.PublishDate;
+                vm.
+            }
+
+            return View(vm);
+        }
+
+
+        [HttpPost("edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDocumentAsync(Guid id, UpdateDocument updateDocument)
+        {
+            if (updateDocument == null)
+            {
+                return View(updateDocument);
+            }
+
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            updateDocument.DocumenId = id;
+            var result = await _documentService.UpdateAsync(updateDocument, userId);
+            if (!result.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, $"{result.Message}");
+                return View(updateDocument);
             }
 
             return RedirectToAction("Index");
