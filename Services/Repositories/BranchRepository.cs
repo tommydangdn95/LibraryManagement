@@ -23,6 +23,22 @@ namespace Services.Repositories
             return result > 0;
         }
 
+        public async Task<bool> DeleteAsync(Guid branchId, Guid submitUserId)
+        {
+            var branch = await GetById(branchId);
+            if (branch == null)
+            {
+                return false;
+            }
+
+            branch.DeleteBy = submitUserId;
+            branch.DeletedDate = DateTime.Now;
+            branch.IsDeleted = true;
+
+            var result = await UpdateAsync(branch);
+            return result;
+        }
+
         public async Task<PagedResult<Branch>> GetAllAsync()
         {
             var branches = await _appDbContext.Branchs.Where(x => !x.IsDeleted).ToListAsync();
@@ -32,6 +48,18 @@ namespace Services.Repositories
             }
 
             return new PagedResult<Branch>(branches, branches.Count(), 1, 100000);
+        }
+
+        public async Task<Branch> GetById(Guid branchId)
+        {
+            return await _appDbContext.Branchs.FirstOrDefaultAsync(x => x.Id == branchId);
+        }
+
+        public async Task<bool> UpdateAsync(Branch branch)
+        {
+            _appDbContext.Branchs.Update(branch);
+            var result = await _appDbContext.SaveChangesAsync();
+            return result > 0;
         }
     }
 }

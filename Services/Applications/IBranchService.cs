@@ -7,6 +7,8 @@ namespace Services.Applications
     public interface IBranchService
     {
         public Task<IResult> CreateBranchAsync(CreateBranch model, Guid createUserId);
+        public Task<IResult> UpdateBranchAsync(UpdateBranch branch, Guid updateUserId);
+        public Task<IResult> DeleteBranchAsync(Guid branchId, Guid updateUserId);
         public Task<IResultData<List<BranchItemDto>>> GetAllBranchAsync();
     }
 }

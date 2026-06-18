@@ -36,6 +36,17 @@ namespace Services.Applications
             return Result.Success("Create new branch successfully");
         }
 
+        public async Task<IResult> DeleteBranchAsync(Guid branchId, Guid updateUserId)
+        {
+            var result = await _branchRepository.DeleteAsync(branchId, updateUserId);
+            if (!result)
+            {
+                return Result.Failed($"Delete branch failed");
+            }
+
+            return Result.Success("Delete branch successfully");
+        }
+
         public async Task<IResultData<List<BranchItemDto>>> GetAllBranchAsync()
         {
             var pageResults = await _branchRepository.GetAllAsync();
@@ -52,6 +63,31 @@ namespace Services.Applications
             }).ToList();
 
             return ResultData<List<BranchItemDto>>.SuccessData("Get all list branch successfully", branchDtos);
+        }
+
+        public async Task<IResult> UpdateBranchAsync(UpdateBranch branch, Guid updateUserId)
+        {
+            var branchUpdate = await _branchRepository.GetById(branch.BranchId);
+            if (branchUpdate != null)
+            {
+                return Result.Failed("Could not found branch");
+            }
+
+            branchUpdate.Name = branch.Name;
+            branchUpdate.Address = branch.Address;
+            branchUpdate.Phone = branch.Phone;
+            branchUpdate.Email = branch.Email;
+            branchUpdate.Description = branch.Description;
+            branchUpdate.UpdatedDate = DateTime.Now;
+            branchUpdate.UpdatedBy = updateUserId;
+
+            var result = await _branchRepository.UpdateAsync(branchUpdate);
+            if (!result)
+            {
+                return Result.Failed("Could not found branch");
+            }
+
+            return Result.Success("Update branch successfully");
         }
     }
 }

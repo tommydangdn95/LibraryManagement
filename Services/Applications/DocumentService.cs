@@ -140,5 +140,10 @@ namespace Services.Applications
 
             return Result.Success($"Delete document successfully");
         }
+
+        public async Task<IResult> GetByIdAsync(Guid branchId)
+        {
+            
+        }
     }
 }
