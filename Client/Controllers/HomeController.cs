@@ -1,13 +1,13 @@
-using Client.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Services.Applications;
+using Services.Dtos.Apis;
 using Services.Enums;
 using Services.Utils;
-using Services.ViewModels._DocumentViewModels;
+using Services.ViewModels.Clients._BorrowViewModels;
 using Services.ViewModels.Clients._DocumentViewModels;
-using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Client.Controllers
 {
@@ -17,10 +17,12 @@ namespace Client.Controllers
     {
         private readonly IDocumentService _documentService;
         private readonly IBranchService _branchService;
-        public HomeController(IDocumentService documentService, IBranchService branchService)
+        private readonly IBorrowService _borrowService;
+        public HomeController(IDocumentService documentService, IBranchService branchService, IBorrowService borrowService)
         {
             _documentService = documentService;
             _branchService = branchService;
+            _borrowService = borrowService;
         }
 
         [HttpGet("")]    
@@ -43,21 +45,85 @@ namespace Client.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<IActionResult> GetListAsync([FromBody] DocumentListQuery query)
+        public async Task<IActionResult> GetListAsync(DocumentListQuery query)
         {
             var result = await _documentService.GetListDocument(query);
             return PartialView("_ListDocument", result.Data);
         }
 
-        public IActionResult Privacy()
+
+        [HttpGet("GetModalBorrowRequest")]
+        public async Task<IActionResult> GetModelBorrowRequest(Guid documentId)
         {
-            return View();
+            var documentResult = await _documentService.GetDocumentViewItem(documentId);
+            if (!documentResult.IsSuccess)
+            {
+                return PartialView("Error");
+            }
+
+            var documentViewItem = documentResult.Data;
+
+            var resultDocumentBranch = await _documentService.GetDocumentBranch(documentViewItem.DocumentId);
+            if (resultDocumentBranch.IsSuccess)
+            {
+                var resultBranch = await _branchService.GetBranchItemByIdAsync(resultDocumentBranch.Data.BranchId);
+                if (resultBranch.IsSuccess)
+                {
+                    documentViewItem.Branch = resultBranch.Data.Name;
+                    documentViewItem.BranchId = resultBranch.Data.BranchId;
+                }
+            }
+
+            var borrowRequest = new CreateBorrowRequest()
+            {
+                DocumentId = documentViewItem.DocumentId,
+                BranchId = documentViewItem.BranchId,
+                BranchName = documentViewItem.Branch,
+                DocumentTitle = documentViewItem.DocumentTitle,
+                DocumentType = documentViewItem.DocumentType,
+                Note = string.Empty,
+                ReturnDate = DateTime.Now
+            };
+
+            return PartialView("_BorrowRequestModal", borrowRequest);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost("CreateBorrowRequest")]
+        public async Task<IActionResult> CreateBorrowRequest([FromBody] CreateBorrowRequest request)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var documentResult = await _documentService.GetByIdAsync(request.DocumentId);
+            if (!documentResult.IsSuccess)
+            {
+                return BadRequest(new ApiErrorResponse<string>
+                                (
+                                    "Could not found document for borrowing",
+                                     StatusCodes.Status401Unauthorized
+                                ));
+            }
+
+
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return Unauthorized(new ApiErrorResponse<string>
+                                (
+                                    "Could not parse user id",
+                                     StatusCodes.Status401Unauthorized
+                                ));
+            }
+
+            var result = await _borrowService.CreateBorrowRequest(request, userId);
+            if (!result.IsSuccess)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResponse<string>
+                        (
+                             result.Message,
+                             StatusCodes.Status500InternalServerError
+                        ));
+            }
+
+            return StatusCode(StatusCodes.Status201Created, new ApiCommandResponse(result.Message, StatusCodes.Status201Created));
         }
+
     }
 }

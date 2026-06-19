@@ -159,8 +159,10 @@ namespace Services.Repositories
             var documentsQuery = from doc in _dbContext.Documents
                                  join db in _dbContext.DocumentBranchs
                                      on doc.Id equals db.DocumentId
+
                                  join branch in _dbContext.Branchs
                                      on db.BranchId equals branch.Id
+
                                  join br in _dbContext.BorrowRequest
                                      on doc.Id equals br.DocumentId into borrowGroup
 

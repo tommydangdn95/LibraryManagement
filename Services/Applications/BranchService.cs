@@ -65,10 +65,33 @@ namespace Services.Applications
             return ResultData<List<BranchItemDto>>.SuccessData("Get all list branch successfully", branchDtos);
         }
 
+        public async Task<IResultData<BranchItemDto>> GetBranchItemByIdAsync(Guid branchId)
+        {
+            var branch = await _branchRepository.GetById(branchId);
+            if (branch == null)
+            {
+                return ResultData<BranchItemDto>.Failed("Could not found branch");
+            }
+
+            var item = new BranchItemDto
+            {
+                BranchId = branch.Id,
+                Name = branch.Name,
+                Address = branch.Address,
+                Phone = branch.Phone,
+                Email = branch.Email,
+                Description = branch.Description,
+                IsActive = branch.IsActive
+            };
+
+            return ResultData<BranchItemDto>.SuccessData("Get branch successfully", item);
+
+        }
+
         public async Task<IResult> UpdateBranchAsync(UpdateBranch branch, Guid updateUserId)
         {
             var branchUpdate = await _branchRepository.GetById(branch.BranchId);
-            if (branchUpdate != null)
+            if (branchUpdate == null)
             {
                 return Result.Failed("Could not found branch");
             }

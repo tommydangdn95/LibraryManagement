@@ -1,0 +1,62 @@
+﻿@using Services.ViewModels.Clients._BorrowViewModels
+@model CreateBorrowRequest
+
+
+<!-- Header -->
+<div class="modal-header">
+    <h5 class="modal-title fw-semibold" id="borrowModalLabel">
+        <i class="bi bi-send me-2"></i>Borrow Request
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<!-- Body -->
+<div class="modal-body p-4">
+
+    <!-- Document info -->
+    <div class="borrow-doc-info d-flex gap-3 align-items-center mb-4">
+        <div class="borrow-doc-cover" id="modalDocCover">
+            <i class="bi bi-book" id="modalDocIcon"></i>
+        </div>
+        <div>
+            <div class="fw-semibold" id="modalDocTitle">@Model.DocumentTitle</div>
+            <div class="small text-muted mt-1">
+                <span class="badge badge-type me-1" id="modalDocType">@Model.DocumentType.ToString()</span>
+                <i class="bi bi-geo-alt me-1"></i><span id="modalDocBranch">@Model.BranchName</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date range -->
+    <div class="row g-3 mb-3">
+        <div class="col-6">
+            <label class="form-label small fw-semibold" asp-for="ReturnDate">Return Date <span class="text-danger">*</span></label>
+            <input type="date" class="form-control form-control-sm" min="2026-06-19" value="@DateTime.Now" id="modalBorrowReturnDate" required />
+        </div>
+    </div>
+
+    <!-- Note -->
+    <div class="mb-3">
+        <label class="form-label small fw-semibold" asp-for="Note">Note <span class="text-muted fw-normal">(optional)</span></label>
+        <textarea class="form-control form-control-sm" id="modalBorrowNote" rows="10" style="resize: none" placeholder="Any special requests or notes..."></textarea>
+    </div>
+
+    <input type="hidden" value="@Model.DocumentId" id="modalBorrowDocumentId" />
+    <input type="hidden" value="@Model.BranchId" id="modalBorrowBranchId" />
+</div>
+
+<!-- Footer -->
+<div class="modal-footer border-0 pt-0 px-4 pb-4">
+    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-primary btn-sm rounded-pill px-4 submitBorrowBtn">
+        <i class="bi bi-send me-1"></i>Submit Request
+    </button>
+</div>
+
+            
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

@@ -11,6 +11,7 @@ namespace Services.ViewModels.Clients._DocumentViewModels
     {
         public Guid DocumentId { get; set; }
         public string Branch { get; set; }
+        public Guid BranchId { get; set; }
         public string DocumentTitle { get; set; }
         public string DocumentType { get; set; }
         public DocumentStatus DocumentStatus { get; set; }
@@ -22,7 +23,7 @@ namespace Services.ViewModels.Clients._DocumentViewModels
         {
             get
             {
-                return PublishDate.ToString("MMM yyyy");
+                return PublishDate.ToString("MMM/yyyy");
             }
         }
 
@@ -30,8 +31,15 @@ namespace Services.ViewModels.Clients._DocumentViewModels
         {
             get
             {
-                return (DocumentStatus == DocumentStatus.Good) &&
-                    (BorrowStatus == Enums.BorrowStatus.Cancel || BorrowStatus == Enums.BorrowStatus.Returned);
+                if (BorrowStatus.HasValue && BorrowStatus.Value == Enums.BorrowStatus.Lost)
+                {
+                    return false;
+                }
+
+                var isAvailableBorrow = BorrowStatus == Enums.BorrowStatus.Cancel || BorrowStatus == Enums.BorrowStatus.Returned;
+                var isALlowBorrow = (DocumentStatus == DocumentStatus.Good) && (!BorrowStatus.HasValue || (BorrowStatus.HasValue && isAvailableBorrow));
+
+                return isALlowBorrow;
             }
         }
         public BorrowStatus? BorrowStatus { get; set; }

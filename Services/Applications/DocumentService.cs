@@ -200,6 +200,7 @@ namespace Services.Applications
                     DocumentType = x.DocumentType.ToString(),
                     BorrowStatus = x.BorrowStatus,
                     BorrowDate = x.BorrowDate,
+                    ReturnDate = x.ReturnDate
                 }).ToList(),
                 Paging = Paging.GetPaging(query.Page, query.RowsPerPage, pageResult.TotalCount)
             };
@@ -212,6 +213,28 @@ namespace Services.Applications
         {
             var item = await _documentRepository.GetDocumentBranchAsync(documentId);
             return ResultData<DocumentBranch>.SuccessData("Get document branch successfully", item);
+        }
+
+        public async Task<IResultData<DocumentViewItem>> GetDocumentViewItem(Guid documentId)
+        {
+            var document = await _documentRepository.GetByIdAsync(documentId);
+            if (document == null)
+            {
+                return ResultData<DocumentViewItem>.Failed("Not found document");
+            }
+
+            var item = new DocumentViewItem()
+            {
+                DocumentId = document.Id,
+                DocumentTitle = document.Title,
+                DocumentStatus = document.DocumentStatus,
+                DocumentType = document.DocumentType.ToString(),
+                DocumentDescription = document.Description,
+                PublishDate = document.PublishDate,
+                CoverImageUrl = document.CoverImageUrl,
+            };
+
+            return ResultData<DocumentViewItem>.SuccessData("Get document successfully", item);
         }
 
         #endregion

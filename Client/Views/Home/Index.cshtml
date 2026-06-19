@@ -108,31 +108,18 @@
         </div>
 
         <div id="listDocument">
-            <div id="loadingSpinner" class="text-center d-none">
-                <div class="spinner-border text-primary" role="status" style="width:2.5rem;height:2.5rem;">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="text-muted small mt-2 mb-0">Loading documents...</p>
-            </div>
         </div>
-
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4">
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">12</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
-                </ul>
-            </nav>
-        </div>
-
     </div>
 </div>
+
+<!-- ===== BORROW REQUEST MODAL ===== -->
+<div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="borrowModalContent">
+        </div>
+  </div>
+</div>
+<!-- /BORROW REQUEST MODAL -->
 
 
 @section Scripts {

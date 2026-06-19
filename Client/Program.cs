@@ -43,8 +43,10 @@ namespace Client
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IBranchRepository, BranchRepository>();
             builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+            builder.Services.AddScoped<IBorrowRepository, BorrowRepository>();
             builder.Services.AddScoped<IBranchService, BranchService>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
+            builder.Services.AddScoped<IBorrowService, BorrowService>();
             builder.Services.AddTransient<SeedData>();
 
             // ===== Authentication Cookie =====
