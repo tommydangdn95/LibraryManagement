@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/borrow.css" />
+}
+
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="page-title mb-0"><i class="bi bi-bookmark me-2"></i>My Borrow Records</h4>
+        <p class="text-muted small mb-0 mt-1">Track and manage your borrowed documents</p>
+    </div>
+    <a href="#" class="btn btn-primary btn-sm rounded-pill px-3">
+        <i class="bi bi-plus me-1"></i>Browse Documents
+    </a>
+</div>
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon" style="background:#e0e7ff;"><i class="bi bi-hourglass-split" style="color:#4338ca;"></i></div>
+                <div><div class="fw-bold fs-4 lh-1">3</div><div class="text-muted small">Pending</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon" style="background:#d1fae5;"><i class="bi bi-book-fill" style="color:#065f46;"></i></div>
+                <div><div class="fw-bold fs-4 lh-1">5</div><div class="text-muted small">Active</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon" style="background:#fee2e2;"><i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;"></i></div>
+                <div><div class="fw-bold fs-4 lh-1">1</div><div class="text-muted small">Overdue</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon" style="background:#f3f4f6;"><i class="bi bi-check2-circle" style="color:#6b7280;"></i></div>
+                <div><div class="fw-bold fs-4 lh-1">24</div><div class="text-muted small">Returned</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-3" id="borrowTabs">
+    <li class="nav-item"><button class="nav-link active" data-tab="all">All <span class="badge bg-secondary ms-1">9</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="pending">Pending <span class="badge ms-1" style="background:#fef3c7;color:#92400e;">3</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="active">Active <span class="badge ms-1" style="background:#d1fae5;color:#065f46;">5</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="overdue">Overdue <span class="badge ms-1" style="background:#fee2e2;color:#991b1b;">1</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="returned">Returned</button></li>
+</ul>
+
+<!-- Search & sort -->
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <div class="input-group input-group-sm" style="max-width:280px;">
+        <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" class="form-control" placeholder="Search title..." id="searchInput" />
+    </div>
+    <select class="form-select form-select-sm w-auto">
+        <option>Sort: Newest</option>
+        <option>Sort: Oldest</option>
+        <option>Sort: Due Soon</option>
+    </select>
+</div>
+
+<!-- Borrow list -->
+<div id="borrowList" class="d-flex flex-column gap-3">
+
+</div><!-- /borrowList -->

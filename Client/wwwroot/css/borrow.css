@@ -1,0 +1,145 @@
+﻿.navbar {
+    background: #4338ca;
+}
+
+.page-title {
+    font-weight: 700;
+    letter-spacing: -.3px;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #e5e7eb;
+}
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6b7280;
+        font-weight: 500;
+        padding: .6rem 1.2rem;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #4338ca;
+            border-bottom-color: #4338ca;
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            color: #374151;
+        }
+
+.borrow-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    transition: box-shadow .15s;
+}
+
+    .borrow-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,.11);
+    }
+
+.doc-cover {
+    width: 72px;
+    min-height: 96px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.badge-type {
+    background-color: #e0e7ff;
+    color: #4338ca;
+}
+
+.badge-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.badge-returned {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.badge-overdue {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.overdue-row {
+    border-left: 4px solid #ef4444 !important;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    border-radius: 16px 16px 0 0;
+    color: #fff;
+}
+
+    .modal-header .btn-close {
+        filter: invert(1);
+    }
+
+.detail-label {
+    font-size: .75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.detail-value {
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.duration-btn.active {
+    background: #4338ca !important;
+    color: #fff !important;
+    border-color: #4338ca !important;
+}
