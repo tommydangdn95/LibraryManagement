@@ -1,8 +1,9 @@
-﻿namespace Services.ViewModels.Clients._BorrowViewModels
+﻿using Services.Enums;
+
+namespace Services.ViewModels._BorrowViewModels
 {
-    public class GetListDocumentBorrow
+    public class GetListBorrowRequest
     {
-        public string Title { get; set; }
         public int? BorrowStatus { get; set; }
         public int Page { get; set; } = 1;
         public int RowsPerPage { get; set; } = 25;

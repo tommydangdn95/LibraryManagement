@@ -1,16 +1,14 @@
 ﻿using Services.Dtos;
+using Services.Enums;
+using Services.ViewModels._BorrowViewModels;
 using Services.ViewModels.Clients._BorrowViewModels;
-using Services.ViewModels.Clients._DocumentViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Applications
 {
     public interface IBorrowService
     {
+        public Task<IResultData<BorrowRequestList>> GetBorrowRequestList(GetListBorrowRequest request);
+        public Task<IResult> UpdateBrrowStatus(UpdateBorrowRequest updateBorrowRequest);
         public Task<IResult> CreateBorrowRequest(CreateBorrowRequest request, Guid submitUserId);
         public Task<IResultData<DocumentBorrowListItem>> GetBorrowDocumentByUser(GetListDocumentBorrow request, Guid userId);
     }

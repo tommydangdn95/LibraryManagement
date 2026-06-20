@@ -1,13 +1,8 @@
 ﻿using Services.Dtos;
+using Services.Dtos.ApplicationDtos._Borrow;
 using Services.Dtos.ApplicationDtos._Document;
 using Services.Models;
 using Services.Models.Criterias;
-using Services.ViewModels.Clients._DocumentViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Repositories
 {
@@ -17,6 +12,7 @@ namespace Services.Repositories
         public Task<bool> UpdateAsync(BorrowRequest borrowRequest);
         public Task<bool> DeleteAsync(Guid borrowRequestId, Guid submitUserId);
         public Task<BorrowRequest> GetById(Guid borrowRequestId);
+        public Task<PagedResult<BorrowRequestItem>> GetBorrowRequestItem(GetListBorrowRequestItemCriteria criteria);
 
         #region Client
         public Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(GetDocumentListBorrowItemCriteria criteria, Guid userId);

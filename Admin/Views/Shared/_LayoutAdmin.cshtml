@@ -243,17 +243,22 @@
                             </a>
                         }
 
-                        <a class="nav-link" href="tables.html">
-                            <div class="nav-link-icon"><i data-feather="filter"></i></div>
-                            Tables
-                        </a>
+                        @if (User.IsInRole(RoleConst.Admin) || User.IsInRole(RoleConst.Staff))
+                        {
+                            <a class="nav-link" asp-controller="borrow" asp-action="index">
+                                <div class="nav-link-icon"><i data-feather="book-open"></i></div>
+                                Borrow Management
+                            </a>
+                        }
+
+
                     </div>
                 </div>
                 <!-- Sidenav Footer-->
                 <div class="sidenav-footer">
                     <div class="sidenav-footer-content">
                         <div class="sidenav-footer-subtitle">Logged in as:</div>
-                        <div class="sidenav-footer-title">Valerie Luna</div>
+                        <div class="sidenav-footer-title">@User.Identity.Name</div>
                     </div>
                 </div>
             </nav>

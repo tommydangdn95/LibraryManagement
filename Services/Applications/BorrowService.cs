@@ -4,14 +4,8 @@ using Services.Models;
 using Services.Models.Criterias;
 using Services.Repositories;
 using Services.Utils;
+using Services.ViewModels._BorrowViewModels;
 using Services.ViewModels.Clients._BorrowViewModels;
-using Services.ViewModels.Clients._DocumentViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Services.Applications
 {
@@ -84,6 +78,72 @@ namespace Services.Applications
             };
 
             return ResultData<DocumentBorrowListItem>.SuccessData("Get list item successfully", documentBorrowListItem);
+        }
+
+        public async Task<IResultData<BorrowRequestList>> GetBorrowRequestList(GetListBorrowRequest request)
+        {
+            var listBorrowStatus = new List<BorrowStatus>();
+            if (request.BorrowStatus.HasValue)
+            {
+                var parseStatus = request.BorrowStatus.Value.ToEnum<BorrowStatus>();
+                listBorrowStatus.Add(parseStatus.Value);
+            }
+
+            var criteria = new GetListBorrowRequestItemCriteria()
+            {
+                BorrowStatuses = listBorrowStatus,
+                Page = request.Page,
+                RowsPerPage = request.RowsPerPage
+            };
+
+            var pageResult = await this._borrowRepository.GetBorrowRequestItem(criteria);
+            var borrowRequestListItem = new BorrowRequestList()
+            {
+                Items = pageResult.Items.Select(x => new BorrowRequestViewItem()
+                {
+                    DocumentTitle = x.DocumentTitle,
+                    DocumentDescription = x.DocumentDescription,
+                    DocumentStatus = x.DocumentStatus,
+                    CoverImageUrl = x.CoverImageUrl,
+                    DocumentType = x.DocumentType,
+                    BorrowStatus = x.BorrowStatus,
+                    RequestDate = x.RequestDate,
+                    ReturnDate = x.ReturnDate,
+                    BorrowerName = x.BorrowerName,
+                    BranchName = x.BranchName,
+                    PublishDate = x.PublishDate,
+                }).ToList(),
+
+                Paging = Paging.GetPaging(request.Page, request.RowsPerPage, pageResult.TotalCount)
+            };
+
+            return ResultData<BorrowRequestList>.SuccessData("Get list item successfully", borrowRequestListItem);
+        }
+
+        public async Task<IResult> UpdateBrrowStatus(UpdateBorrowRequest updateBorrowRequest)
+        {
+            var borrowRequest = await _borrowRepository.GetById(updateBorrowRequest.BorrowRequestId);
+            if (borrowRequest == null)
+            {
+                return Result.Failed("Borrow Request Not Found");
+            }
+
+            var parseBorrowStatus = updateBorrowRequest.BorrowStatus.ToEnum<BorrowStatus>();
+            if (parseBorrowStatus.HasValue)
+            {
+                borrowRequest.BorrowStatus = parseBorrowStatus.Value;
+            }
+
+            borrowRequest.ApprovedUserId = updateBorrowRequest.SubmitedUserId;
+            borrowRequest.UpdatedBy = updateBorrowRequest.SubmitedUserId;
+            borrowRequest.UpdatedDate = DateTime.Now;
+            var result = await this._borrowRepository.UpdateAsync(borrowRequest);
+            if (result)
+            {
+                return Result.Failed("Update new borrow request failed");
+            }
+
+            return Result.Success("Create new borrow request successfully");
         }
     }
 }
