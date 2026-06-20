@@ -19,7 +19,7 @@ namespace Services.Repositories
         public Task<BorrowRequest> GetById(Guid borrowRequestId);
 
         #region Client
-        public Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(Guid userId, GetDocumentListBorrowItemCriteria criteria);
+        public Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(GetDocumentListBorrowItemCriteria criteria, Guid userId);
         #endregion
     }
 }

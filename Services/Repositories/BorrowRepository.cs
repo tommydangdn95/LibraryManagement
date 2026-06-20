@@ -35,7 +35,7 @@ namespace Services.Repositories
             return await UpdateAsync(borrowRequest);
         }
 
-        public async Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(Guid userId, GetDocumentListBorrowItemCriteria criteria)
+        public async Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(GetDocumentListBorrowItemCriteria criteria, Guid userId)
         {
             var query = from doc in _dbContext.Documents
                         join docB in _dbContext.DocumentBranchs

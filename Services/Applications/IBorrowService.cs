@@ -12,6 +12,6 @@ namespace Services.Applications
     public interface IBorrowService
     {
         public Task<IResult> CreateBorrowRequest(CreateBorrowRequest request, Guid submitUserId);
-        public Task<IResultData<DocumentViewItem>>()
+        public Task<IResultData<DocumentBorrowListItem>> GetBorrowDocumentByUser(GetListDocumentBorrow request, Guid userId);
     }
 }
