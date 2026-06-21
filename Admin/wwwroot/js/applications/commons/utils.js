@@ -15,3 +15,17 @@
         });
     });
 }
+
+
+
+function addLoadingSpin(element) {
+    const loading = `
+        <div id="loadingSpinner" class="text-center">
+                <div class="spinner-border text-primary" role="status" style="width:2.5rem;height:2.5rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted small mt-2 mb-0">Loading...</p>
+            </div>
+    `;
+    element.html(loading);
+}

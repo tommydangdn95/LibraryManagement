@@ -12,6 +12,7 @@ namespace Services.Repositories
         public Task<bool> UpdateAsync(BorrowRequest borrowRequest);
         public Task<bool> DeleteAsync(Guid borrowRequestId, Guid submitUserId);
         public Task<BorrowRequest> GetById(Guid borrowRequestId);
+        public Task<BorrowRequestItem> GetBorrowDetailById(Guid borrowRequestId);
         public Task<PagedResult<BorrowRequestItem>> GetBorrowRequestItem(GetListBorrowRequestItemCriteria criteria);
 
         #region Client

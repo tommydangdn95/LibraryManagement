@@ -9,7 +9,7 @@ namespace Services.ViewModels._BorrowViewModels
 {
     public class BorrowRequestViewItem
     {
-        public Guid BrrowRequestId { get; set; }
+        public Guid BorrowRequestId { get; set; }
         public string DocumentTitle { get; set; }
         public string DocumentDescription { get; set; }
         public DocumentType DocumentType { get; set; }

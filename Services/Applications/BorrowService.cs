@@ -101,6 +101,7 @@ namespace Services.Applications
             {
                 Items = pageResult.Items.Select(x => new BorrowRequestViewItem()
                 {
+                    BorrowRequestId = x.BrrowRequestId,
                     DocumentTitle = x.DocumentTitle,
                     DocumentDescription = x.DocumentDescription,
                     DocumentStatus = x.DocumentStatus,
@@ -118,6 +119,34 @@ namespace Services.Applications
             };
 
             return ResultData<BorrowRequestList>.SuccessData("Get list item successfully", borrowRequestListItem);
+        }
+
+        public async Task<IResultData<BorrowRequestViewItem>> GetDetailBorrowRequestItem(Guid borrowRequestItem)
+        {
+            var borrowRequest = await _borrowRepository.GetBorrowDetailById(borrowRequestItem);
+            if (borrowRequest == null)
+            {
+                return ResultData<BorrowRequestViewItem>.Failed("Could not get borrow request item");
+            }
+
+            var borrowRequestViewItem = new BorrowRequestViewItem()
+            {
+                BorrowRequestId = borrowRequest.BrrowRequestId,
+                DocumentTitle = borrowRequest.DocumentTitle,
+                DocumentDescription = borrowRequest.DocumentDescription,
+                DocumentStatus = borrowRequest.DocumentStatus,
+                CoverImageUrl = borrowRequest.CoverImageUrl,
+                DocumentType = borrowRequest.DocumentType,
+                BorrowStatus = borrowRequest.BorrowStatus,
+                RequestDate = borrowRequest.RequestDate,
+                ReturnDate = borrowRequest.ReturnDate,
+                BorrowerName = borrowRequest.BorrowerName,
+                BranchName = borrowRequest.BranchName,
+                PublishDate = borrowRequest.PublishDate,
+            };
+
+            return ResultData<BorrowRequestViewItem>.SuccessData("Get borrow item detail successfully", borrowRequestViewItem);
+
         }
 
         public async Task<IResult> UpdateBrrowStatus(UpdateBorrowRequest updateBorrowRequest)
@@ -138,7 +167,7 @@ namespace Services.Applications
             borrowRequest.UpdatedBy = updateBorrowRequest.SubmitedUserId;
             borrowRequest.UpdatedDate = DateTime.Now;
             var result = await this._borrowRepository.UpdateAsync(borrowRequest);
-            if (result)
+            if (!result)
             {
                 return Result.Failed("Update new borrow request failed");
             }

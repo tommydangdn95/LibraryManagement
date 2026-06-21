@@ -4,9 +4,10 @@
     {
         Cancel = -1,
         SubmitRequest = 0,
-        Borrowing = 1,
-        Returned = 2,
-        Overdue = 3,
-        Lost = 4
+        Approved = 1,
+        Borrowing = 2,
+        Returned = 3,
+        Overdue = 4,
+        Lost = 5
     }
 }

@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#loadingSpinner {
+    padding: 60px 0;
+}

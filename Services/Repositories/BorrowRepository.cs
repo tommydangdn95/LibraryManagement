@@ -64,6 +64,7 @@ namespace Services.Repositories
             var items = await query
                         .Select(x => new BorrowRequestItem
                         {
+                            BrrowRequestId = x.borrow.Id,
                             DocumentId = x.doc.Id,
                             BranchId = x.branch.Id,
                             BranchName = x.branch.Name,
@@ -145,6 +146,55 @@ namespace Services.Repositories
 
             var pagedResult = new PagedResult<DocumentItem>(items, totalCount, criteria.Page, criteria.RowsPerPage);
             return pagedResult;
+        }
+
+        public async Task<BorrowRequestItem> GetBorrowDetailById(Guid borrowRequestId)
+        {
+            var query = from doc in _dbContext.Documents
+                        join docB in _dbContext.DocumentBranchs
+                            on doc.Id equals docB.DocumentId
+                        join branch in _dbContext.Branchs
+                            on docB.BranchId equals branch.Id
+
+                        join borrow in _dbContext.BorrowRequest
+                            on doc.Id equals borrow.DocumentId
+
+                        join user in _dbContext.Users
+                        on borrow.BorrowerId equals user.Id
+
+                        where !doc.IsDeleted
+                             && !borrow.IsDeleted
+                             && borrow.Id == borrowRequestId
+                        select new { doc, user, branch, borrow };
+
+            var selectedItem = await query.FirstOrDefaultAsync();
+            if (selectedItem == null)
+            {
+                return null;
+            }
+
+
+            var borrowItem = new BorrowRequestItem
+            {
+                BrrowRequestId = selectedItem.borrow.Id,
+                DocumentId = selectedItem.doc.Id,
+                BranchId = selectedItem.branch.Id,
+                BranchName = selectedItem.branch.Name,
+                BorrowerId = selectedItem.borrow.BorrowerId,
+                BorrowerName = selectedItem.user.FullName,
+                DocumentTitle = selectedItem.doc.Title,
+                DocumentType = selectedItem.doc.DocumentType,
+                DocumentStatus = selectedItem.doc.DocumentStatus,
+                DocumentDescription = selectedItem.doc.Description,
+                CoverImageUrl = selectedItem.doc.CoverImageUrl,
+                PublishDate = selectedItem.doc.PublishDate,
+                BorrowStatus = selectedItem.borrow.BorrowStatus,
+                RequestDate = selectedItem.borrow.BorrowDate.Value,
+                ReturnDate = selectedItem.borrow.ReturnDate.Value,
+            };
+
+            return borrowItem;
+
         }
 
         #endregion

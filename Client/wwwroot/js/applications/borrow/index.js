@@ -1,5 +1,4 @@
 ﻿$(function () {
-
     (async () => {
         await getListDocumentBorrow();
     })()
