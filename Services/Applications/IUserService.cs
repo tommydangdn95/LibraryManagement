@@ -11,7 +11,7 @@ namespace Services.Applications
 {
     public interface IUserService
     {
-        public Task<AppUser> GetUserById(Guid userId);
-        public Task<IResult> CreateUser(CreateUser createUser);
+        public Task<IResultData<AppUser>> GetUserByIdAsync(Guid userId);
+        public Task<IResultData<Guid>> CreateUser(CreateUser createUser);
     }
 }

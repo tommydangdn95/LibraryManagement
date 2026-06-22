@@ -3,13 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Services.Applications;
+using Services.Enums;
 using Services.Models._Users;
 using Services.ViewModels._AccountViewModels;
+using Services.ViewModels._UserViewModels;
 
 namespace Admin.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger _logger;
@@ -17,8 +21,10 @@ namespace Admin.Controllers
         public AccountController(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
+        IUserService userService,
         ILoggerFactory loggerFactory)
         {
+            _userService = userService;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -77,6 +83,48 @@ namespace Admin.Controllers
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var createUser = new CreateUser()
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    Password = model.Password,
+                    ConfirmPassword = model.ConfirmPassword,
+                    RoleId = (int)RoleType.User
+                };
+
+                var result = await _userService.CreateUser(createUser);
+                if (result.IsSuccess)
+                {
+                    var userResult = await _userService.GetUserByIdAsync(result.Data);
+                    var user = userResult.Data;
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return RedirectToLocal(returnUrl);
+                }
+
+                ModelState.AddModelError(string.Empty, result.Message);
+            }
+
+            return View(model);
         }
 
         [HttpGet]

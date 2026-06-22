@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Services.Consts;
 using Services.Dtos;
 using Services.Enums;
@@ -23,7 +24,7 @@ namespace Services.Applications
             return user;
         }
 
-        public async Task<IResult> CreateUser(CreateUser createUser)
+        public async Task<IResultData<Guid>> CreateUser(CreateUser createUser)
         {
             var appUser = new AppUser()
             {
@@ -41,7 +42,7 @@ namespace Services.Applications
             var result = await _userManager.CreateAsync(appUser, createUser.Password);
             if (!result.Succeeded)
             {
-                return Result.Failed($"Create user failed: {result.Errors.ToError()}");
+                return ResultData<Guid>.Failed($"Create user failed: {result.Errors.ToError()}");
             }
 
             var claims = new Claim[]
@@ -54,17 +55,28 @@ namespace Services.Applications
 
             if (!result.Succeeded)
             {
-                return Result.Failed($"Create user failed: {result.Errors.ToError()}");
+                return ResultData<Guid>.Failed($"Create user failed: {result.Errors.ToError()}");
             }
 
             result = await _userManager.AddToRoleAsync(appUser, role);
 
             if (!result.Succeeded)
             {
-                return Result.Failed($"Create user failed: {result.Errors.ToError()}");
+                return ResultData<Guid>.Failed($"Create user failed: {result.Errors.ToError()}");
             }
 
-            return Result.Success("Create user successfully");
+            return ResultData<Guid>.SuccessData("Create user successfully", appUser.Id);
+        }
+
+        public async Task<IResultData<AppUser>> GetUserByIdAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return ResultData<AppUser>.Failed($"Failed to fetch user");
+            }
+
+            return ResultData<AppUser>.SuccessData("Get user successfully", user);
         }
     }
 }

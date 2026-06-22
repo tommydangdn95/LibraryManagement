@@ -1,0 +1,72 @@
+﻿@using Services.ViewModels._AccountViewModels
+@model RegisterViewModel
+
+<div class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container-xl px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 col-lg-9">
+                            <div class="card my-5">
+                                <div class="card-body p-5 text-center">
+                                    <div class="h3 fw-light mb-3">Create an Account</div>
+                                    <div class="small text-muted mb-2">Sign in using...</div>
+                                    <a class="btn btn-icon btn-facebook mx-1" href="#!"><i class="fab fa-facebook-f fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-github mx-1" href="#!"><i class="fab fa-github fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-google mx-1" href="#!"><i class="fab fa-google fa-fw fa-sm"></i></a>
+                                    <a class="btn btn-icon btn-twitter mx-1" href="#!"><i class="fab fa-twitter fa-fw fa-sm text-white"></i></a>
+                                </div>
+                                <hr class="my-0" />
+                                <div class="card-body p-5">
+                                    <div class="text-center small text-muted mb-4">...or enter your information below.</div>
+                                    <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="mb-3">
+                                            <label class="text-gray-600 small" asp-for="FullName">Full Name</label>
+                                            <input asp-for="FullName" class="form-control form-control-solid" type="text" placeholder="" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="text-gray-600 small" asp-for="Email">Email address</label>
+                                            <input asp-for="Email" class="form-control form-control-solid" type="text" placeholder="" />
+                                        </div>
+                                        <div class="row gx-3">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="text-gray-600 small" asp-for="Password">Password</label>
+                                                    <input asp-for="Password" class="form-control form-control-solid" type="password" placeholder="" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="text-gray-600 small" asp-for="ConfirmPassword">Confirm Password</label>
+                                                    <input asp-for="ConfirmPassword" class="form-control form-control-solid" type="password" placeholder=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <button type="submit" class="btn btn-primary">Register Account</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr class="my-0" />
+                                <div class="card-body px-5 py-4">
+                                    <div class="small text-center">
+                                        Have an account?
+                                        <a asp-controller="account" asp-action="login">Sign in!</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
