@@ -16,7 +16,7 @@ namespace Services.Applications
         public Task<IResultData<DocumentListAdmin>> GetListDocumentAdmin(DocumentListAdminQuery query);
 
         #region Client
-        public Task<IResultData<DocumentList>> GetListDocument(DocumentListQuery query);
+        public Task<IResultData<DocumentList>> GetListDocument(GetDocumentListQuery query);
         public Task<IResultData<DocumentViewItem>> GetDocumentViewItem(Guid documentId);
 
         #endregion

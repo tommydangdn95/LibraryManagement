@@ -1,6 +1,6 @@
 ﻿async function sendApiRequest(url, request, datatype = 'json', method = 'POST') {
     return new Promise((resolve, reject) => {
-        $.ajax({
+        const serverRequest = {
             url: url,
             type: method,
             contentType: 'application/json',
@@ -12,7 +12,9 @@
             error: function (xhr, status, error) {
                 reject({ xhr, status, error });
             }
-        });
+        };
+
+        $.ajax(serverRequest);
     });
 }
 

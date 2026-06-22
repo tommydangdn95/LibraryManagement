@@ -69,14 +69,10 @@
     border-right: none;
 }
 
-.search-bar input {
-    border-left: none;
+.search-bar input:focus {
+    box-shadow: none;
+    border-color: #ced4da;
 }
-
-    .search-bar input:focus {
-        box-shadow: none;
-        border-color: #ced4da;
-    }
 
 .filter-divider {
     font-size: .7rem;

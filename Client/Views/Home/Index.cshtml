@@ -25,7 +25,6 @@
                 <!-- Search -->
                 <div class="filter-divider">Search</div>
                 <div class="input-group search-bar">
-                    <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
                     <input asp-for="SearchDocumentName" type="text" class="form-control form-control-sm" placeholder="Document title..." />
                 </div>
 
@@ -50,8 +49,7 @@
                     }
                 </div>
 
-
-                <!-- Availability -->
+                @* <!-- Availability -->
                 <div class="filter-divider mt-3">Availability</div>
                 <div class="d-flex flex-column gap-1" id="listBorrowStatusDisplay">
                     <div class="form-check">
@@ -65,7 +63,7 @@
                             <label class="form-check-label small" for="borrow_@(borrowStatus.value)_@index">@borrowStatus.label</label>
                         </div>
                     } 
-                </div>
+                </div> *@
 
                 <!-- Publish Date Range -->
                 <div class="filter-divider mt-3">Publish Date</div>
@@ -92,7 +90,7 @@
     <div class="col-lg-9">
 
         <!-- Sort bar -->
-        <div class="d-flex align-items-center justify-content-between mb-3">
+        @* <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex gap-2">
                 <button class="btn btn-sm btn-primary">All</button>
                 <button class="btn btn-sm btn-outline-secondary">Books</button>
@@ -105,7 +103,7 @@
                 <option>Sort: Title A–Z</option>
                 <option>Sort: Title Z–A</option>
             </select>
-        </div>
+        </div> *@
 
         <div id="listDocument">
         </div>

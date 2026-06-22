@@ -10,6 +10,7 @@ using Services.Utils;
 using Services.ViewModels._BranchViewModels;
 using Services.ViewModels._DocumentViewModels;
 using Services.ViewModels.Clients._DocumentViewModels;
+using System.Net.NetworkInformation;
 
 namespace Services.Applications
 {
@@ -171,17 +172,19 @@ namespace Services.Applications
 
 
         #region Client
-        public async Task<IResultData<DocumentList>> GetListDocument(DocumentListQuery query)
+        public async Task<IResultData<DocumentList>> GetListDocument(GetDocumentListQuery query)
         {
+            var parseStartDate = !string.IsNullOrEmpty(query.StartDate) ? DateTime.Parse(query.StartDate) : (DateTime?)null;
+            var parseEndDate = !string.IsNullOrEmpty(query.EndDate) ? DateTime.Parse(query.EndDate) : (DateTime?)null;
+            var branchId = !string.IsNullOrEmpty(query.BranchId) ? Guid.Parse(query.BranchId) : (Guid?)null;
+
             var criteria = new GetDocumentItemCriteria()
             {
-                BranchId = query.BranchId,
+                BranchId = branchId,
                 SearchDocumentName = query.SearchDocumentName,
-                DocumentType = query.DocumentType,
-                DocumentStatus = query.DocumentStatus,
-                BorrowStatus = query.BorrowStatus,
-                StartDate = query.StartDate,
-                EndDate = query.EndDate,
+                DocumentTypes = query.DocumentTypes.Select(x => Enum.Parse<DocumentType>(x)).ToList(),
+                StartDate = parseStartDate,
+                EndDate = parseEndDate,
                 Page = query.Page,
                 RowsPerPage = query.RowsPerPage
             };
@@ -200,6 +203,8 @@ namespace Services.Applications
                     DocumentType = x.DocumentType.ToString(),
                     BorrowStatus = x.BorrowStatus,
                     BorrowDate = x.BorrowDate,
+                    PublishDate = x.PublishDate,
+                    BranchId = x.BranchId,
                     ReturnDate = x.ReturnDate
                 }).ToList(),
                 Paging = Paging.GetPaging(query.Page, query.RowsPerPage, pageResult.TotalCount)

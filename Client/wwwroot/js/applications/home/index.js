@@ -31,7 +31,6 @@
             BranchId: $("#modalBorrowBranchId").val()
         }
 
-
         try {
             addLoadingSpin($("#borrowModalContent"));
             const result = await sendApiRequest(url, request);
@@ -65,23 +64,43 @@
 
         $("#borrowModal").modal('hide');
     })
+
+    $("#filterBtn").on('click', async function (e) {
+        await getListDocument();
+    })
+
+    $('#filterBtn').on('keypress', async function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            await getListDocument();
+        }
+    });
 })
 
 
 async function getListDocument(page = 1) {
     const table = $('#listDocument');
     addLoadingSpin(table);
-    // const searchText = $('#SearchDocumentName').val();
-    // const branchId = $('#BranchId').val();
-    // const listDocumentType = getSelectedDocumentTypes();
-    // const borrowStatus = $('input[name="BorrowStatus"]:checked').val();
-
+    const searchText = $('#SearchDocumentName').val();
+    const branchId = $('#BranchId').val();
+    const listDocumentType = getSelectedDocumentTypes();
+    const borrowStatuses = $('input[name="BorrowStatus"]:checked').val();
+    const documentTypes = $('#listDocumentType input[type="checkbox"]:checked').map(function () {
+        return $(this).val();
+    }).get();
+    const startDate = $('#StartDate').val();
+    const endDate = $('#EndDate').val();
 
     const url = "/Home/GetList";
     const request = {
-        
+        BranchId: branchId,
+        SearchDocumentName: searchText,
+        DocumentTypes: documentTypes,
+        StartDate: startDate,
+        EndDate: endDate,
+        Page: page
     };
-    const result = await sendApiRequest(url, request, 'html', 'GET');
+    const result = await sendApiRequest(url, request, 'html');
     table.html(result);
 }
 

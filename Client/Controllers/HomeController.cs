@@ -44,9 +44,14 @@ namespace Client.Controllers
             return View(vm);
         }
 
-        [HttpGet("GetList")]
-        public async Task<IActionResult> GetListAsync(DocumentListQuery query)
+        [HttpPost("GetList")]
+        public async Task<IActionResult> GetListAsync([FromBody] GetDocumentListQuery query)
         {
+            if (query == null)
+            {
+                return PartialView("_ListDocument", new DocumentList());
+            }
+
             var result = await _documentService.GetListDocument(query);
             return PartialView("_ListDocument", result.Data);
         }

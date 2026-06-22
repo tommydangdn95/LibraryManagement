@@ -167,7 +167,8 @@ namespace Services.Repositories
                                      on doc.Id equals br.DocumentId into borrowGroup
 
                                  from borrow in borrowGroup.DefaultIfEmpty()
-                                 where !doc.IsDeleted
+                                 where 
+                                 !doc.IsDeleted
                                  select new { doc, branch, borrow };
 
             if (criteria.BranchId.HasValue)
@@ -181,6 +182,21 @@ namespace Services.Repositories
             {
                 documentsQuery = documentsQuery
                     .Where(x => x.doc.Title.Contains(criteria.SearchDocumentName));
+            }
+
+            if (criteria.DocumentTypes.Any())
+            {
+                documentsQuery = documentsQuery.Where(x => criteria.DocumentTypes.Contains(x.doc.DocumentType));
+            }
+
+            if (criteria.StartDate.HasValue)
+            {
+                documentsQuery = documentsQuery.Where(x => x.doc.PublishDate >= criteria.StartDate);
+            }
+
+            if (criteria.EndDate.HasValue)
+            {
+                documentsQuery = documentsQuery.Where(x => x.doc.PublishDate <= criteria.EndDate);
             }
 
             var totalCount = await documentsQuery
