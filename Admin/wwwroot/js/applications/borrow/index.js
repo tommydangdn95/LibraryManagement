@@ -1,4 +1,4 @@
-﻿let BORROW_STATUS = {
+﻿var BORROW_STATUS = {
     cancel: -1,
     submitRequest: 0,
     approved: 1,
@@ -84,7 +84,7 @@ function onTabClick() {
 
     $("#nav-all-tab").click(async function () {
         $(this).tab('show');
-        await getListBorrowRequest(null, $("#nav-all-request"));
+        await getListBorrowRequest(null);
     });
 }
 

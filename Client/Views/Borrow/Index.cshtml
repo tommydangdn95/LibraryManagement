@@ -13,9 +13,6 @@
         <h4 class="page-title mb-0"><i class="bi bi-bookmark me-2"></i>My Borrow Records</h4>
         <p class="text-muted small mb-0 mt-1">Track and manage your borrowed documents</p>
     </div>
-    <a href="#" class="btn btn-primary btn-sm rounded-pill px-3">
-        <i class="bi bi-plus me-1"></i>Browse Documents
-    </a>
 </div>
 
 <!-- Stat cards -->
@@ -55,12 +52,28 @@
 </div>
 
 <!-- Tabs -->
-<ul class="nav nav-tabs mb-3" id="borrowTabs">
-    <li class="nav-item"><button class="nav-link active" data-tab="all">All <span class="badge bg-secondary ms-1">9</span></button></li>
-    <li class="nav-item"><button class="nav-link" data-tab="pending">Pending <span class="badge ms-1" style="background:#fef3c7;color:#92400e;">3</span></button></li>
-    <li class="nav-item"><button class="nav-link" data-tab="active">Active <span class="badge ms-1" style="background:#d1fae5;color:#065f46;">5</span></button></li>
-    <li class="nav-item"><button class="nav-link" data-tab="overdue">Overdue <span class="badge ms-1" style="background:#fee2e2;color:#991b1b;">1</span></button></li>
-    <li class="nav-item"><button class="nav-link" data-tab="returned">Returned</button></li>
+<ul class="nav nav-tabs mb-3" id="borrowTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-all-request-tab" data-bs-toggle="tab" data-bs-target="#all-request" type="button" role="tab" aria-controls="all-request" aria-selected="true">All</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-new-request-tab" data-bs-toggle="tab" data-bs-target="#new-request" type="button" role="tab" aria-controls="new-request" aria-selected="false">Pending</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-approved-tab" data-bs-toggle="tab" data-bs-target="#approved-request" type="button" role="tab" aria-controls="approved-request" aria-selected="false">Approved</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-borrowing-tab" data-bs-toggle="tab" data-bs-target="#borrowing-request" type="button" role="tab" aria-controls="borrowing-request" aria-selected="false">Borrowing</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue-request" type="button" role="tab" aria-controls="overdue-request" aria-selected="false">Overdue</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-returned-tab" data-bs-toggle="tab" data-bs-target="#returned-request" type="button" role="tab" aria-controls="returned-request" aria-selected="false">Returned</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nav-canceled-tab" data-bs-toggle="tab" data-bs-target="#canceled-request" type="button" role="tab" aria-controls="canceled-request" aria-selected="false">Canceled</button>
+    </li>
 </ul>
 
 <!-- Search & sort -->
@@ -76,10 +89,18 @@
     </select>
 </div>
 
-<!-- Borrow list -->
-<div id="borrowList" class="d-flex flex-column gap-3">
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade" id="all-request" role="tabpanel" aria-labelledby="nav-all-request-tab" tabindex="0">All Request</div>
+    <div class="tab-pane fade" id="new-request" role="tabpanel" aria-labelledby="nav-new-request-tab" tabindex="0">New Submitted</div>
+    <div class="tab-pane fade" id="approved-request" role="tabpanel" aria-labelledby="nav-approved-tab" tabindex="0">Approved</div>
+    <div class="tab-pane fade" id="borrowing-request" role="tabpanel" aria-labelledby="nav-borrowing-tab" tabindex="0">Borrowing</div>
+    <div class="tab-pane fade" id="overdue-request" role="tabpanel" aria-labelledby="nav-overdue-tab" tabindex="0">Overdue</div>
+    <div class="tab-pane fade" id="returned-request" role="tabpanel" aria-labelledby="nav-returned-tab" tabindex="0">Returned</div>
+    <div class="tab-pane fade" id="canceled-request" role="tabpanel" aria-labelledby="nav-canceled-tab" tabindex="0">Canceled</div>
+</div>
 
-</div><!-- /borrowList -->
+<div id="borrowList" class="d-flex flex-column gap-3">
+</div>
 @section Scripts {
     <script src="~/js/applications/borrow/index.js"></script>
 }

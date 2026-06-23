@@ -1,6 +1,17 @@
-﻿async function sendApiRequest(url, request, datatype = 'json', method = 'POST') {
+﻿var BORROW_STATUS = {
+    canceled: -1,
+    submitRequest: 0,
+    approved: 1,
+    borrowing: 2,
+    returned: 3,
+    overdue: 4,
+    lost: 5,
+}
+
+
+async function sendApiRequest(url, request, datatype = 'json', method = 'POST') {
     return new Promise((resolve, reject) => {
-        const serverRequest = {
+        $.ajax({
             url: url,
             type: method,
             contentType: 'application/json',
@@ -12,9 +23,7 @@
             error: function (xhr, status, error) {
                 reject({ xhr, status, error });
             }
-        };
-
-        $.ajax(serverRequest);
+        });
     });
 }
 

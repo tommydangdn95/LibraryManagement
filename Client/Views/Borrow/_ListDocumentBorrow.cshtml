@@ -2,181 +2,215 @@
 @model DocumentBorrowListItem
 
 
-@foreach(var item in Model.Items)
+
+@if (Model.Items.Count > 0)
 {
-    <div class="card borrow-card" data-status="pending">
-        <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="doc-cover" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#6366f1;"><i class="bi bi-book"></i></div>
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">@item.DocumentTitle</h6>
-                        <p class="text-muted small mb-0">
-                            <span class="badge badge-type">@item.DocumentType.ToString()</span> &nbsp; &nbsp; 
-                            <i class="bi bi-geo-alt me-1"></i>@item.Branch
-                        </p>
+    @foreach (var item in Model.Items)
+    {
+        if (item.BorrowStatus == Services.Enums.BorrowStatus.SubmitRequest)
+        {
+            <div class="card borrow-card" data-status="pending">
+                <div class="card-body d-flex gap-3 align-items-start p-3">
+                    <div class="doc-cover" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#6366f1;"><i class="bi bi-book"></i></div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <h6 class="mb-1 fw-semibold">@item.DocumentTitle</h6>
+                                <p class="text-muted small mb-0">
+                                    <span class="badge badge-type">@item.DocumentType.ToString()</span> &nbsp; &nbsp;
+                                    <i class="bi bi-geo-alt me-1"></i>@item.Branch
+                                </p>
+                            </div>
+                            <span class="badge badge-pending rounded-pill px-3 py-1"><i class="bi bi-hourglass-split me-1"></i>@item.BorrowStatus</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
+                            <span><i class="bi bi-calendar-check me-1"></i>Requested: <b>@item.FormatBorrowDate</b></span>
+                            <span><i class="bi bi-calendar-x me-1"></i>Expected return: <b>@item.FormatReturnDate</b></span>
+                        </div>
+                        <div class="d-flex gap-2 mt-3 flex-wrap">
+                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="cancelRequest(this)">
+                                <i class="bi bi-x-circle me-1"></i>Cancel Request
+                            </div>
+                        </div>
                     </div>
-                    <span class="badge badge-pending rounded-pill px-3 py-1"><i class="bi bi-hourglass-split me-1"></i>@item.BorrowStatus</span>
                 </div>
-                <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
-                    <span><i class="bi bi-calendar-check me-1"></i>Requested: <b>@item.FormatBorrowDate</b></span>
-                    <span><i class="bi bi-calendar-x me-1"></i>Expected return: <b>@item.FormatReturnDate</b></span>
+            }
+            if (item.BorrowStatus == Services.Enums.BorrowStatus.Approved)
+            {
+                <div class="card borrow-card" data-status="active">
+                    <div class="card-body d-flex gap-3 align-items-start p-3">
+                        <div class="doc-cover" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#0c4a6e;"><i class="bi bi-file-earmark-text"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">@item.DocumentTitle</h6>
+                                    <p class="text-muted small mb-0"><span class="badge badge-type">@item.DocumentType.ToString()</span> &nbsp;·&nbsp;<i class="bi bi-geo-alt me-1"></i>@item.Branch</p>
+                                </div>
+                                <span class="badge badge-approved rounded-pill px-3 py-1"><i class="bi bi-book-fill me-1"></i>Active</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
+                                <span><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>@item.BorrowDate.Value.ToString("MMM dd, yyyy")</b></span>
+                                <span><i class="bi bi-calendar-x me-1"></i>Due: <b>@item.ReturnDate.Value.ToString("MMM dd, yyyy")</b></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex gap-2 mt-3 flex-wrap">
-                    @if (item.IsAllowCancelRequest)
-                    {
-                        <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="cancelRequest(this)">
-                            <i class="bi bi-x-circle me-1"></i>Cancel Request
-                        </button>
-                    }
+            }
+            else if (item.BorrowStatus == Services.Enums.BorrowStatus.Borrowing)
+            {
+                <div class="card borrow-card" data-status="active">
+                    <div class="card-body d-flex gap-3 align-items-start p-3">
+                        <div class="doc-cover" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46;"><i class="bi bi-file-earmark-text"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">Deep Learning Approaches for Natural Language Processing</h6>
+                                    <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Westside C &nbsp;·&nbsp; <span class="badge badge-type">Thesis</span></p>
+                                </div>
+                                <span class="badge badge-active rounded-pill px-3 py-1"><i class="bi bi-book-fill me-1"></i>Active</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
+                                <span><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>Jun 5, 2026</b></span>
+                                <span><i class="bi bi-calendar-x me-1"></i>Due: <b class="text-warning">Jun 22, 2026</b></span>
+                                <span class="text-warning fw-semibold"><i class="bi bi-clock me-1"></i>3 days left</span>
+                            </div>
+                            <div class="mt-2">
+                                <div class="progress" style="height:5px; border-radius:3px;">
+                                    <div class="progress-bar bg-warning" style="width:75%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1" style="font-size:.7rem; color:#9ca3af;">
+                                    <span>Jun 5</span><span>Jun 22</span>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-2 flex-wrap">
+                                <button class="btn btn-sm btn-success rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#returnModal"
+                                        data-title="Deep Learning Approaches for Natural Language Processing">
+                                    <i class="bi bi-arrow-return-left me-1"></i>Return
+                                </button>
+                                <button class="btn btn-sm btn-warning rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#renewalModal"
+                                        data-title="Deep Learning Approaches for Natural Language Processing"
+                                        data-return="Jun 22, 2026" data-id="BR-20260605-003" data-renewcount="1">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Renew
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
+                                        data-id="BR-20260605-003" data-title="Deep Learning Approaches for NLP" data-status="Active"
+                                        data-borrow="Jun 5, 2026" data-return="Jun 22, 2026" data-branch="Westside C" data-type="Thesis">
+                                    <i class="bi bi-eye me-1"></i>Detail
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            }
 
-    <!-- PENDING 2 -->
-    <div class="card borrow-card" data-status="pending">
-        <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="doc-cover" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;"><i class="bi bi-file-earmark-bar-graph"></i></div>
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">Annual ICT Industry Report 2025</h6>
-                        <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Uptown B &nbsp;·&nbsp; <span class="badge badge-type">Report</span></p>
+            else if (item.BorrowStatus == Services.Enums.BorrowStatus.Overdue)
+            {
+                <div class="card borrow-card overdue-row" data-status="overdue">
+                    <div class="card-body d-flex gap-3 align-items-start p-3">
+                        <div class="doc-cover" style="background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;"><i class="bi bi-newspaper"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">IEEE Spectrum – March 2026</h6>
+                                    <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Uptown B &nbsp;·&nbsp; <span class="badge badge-type">Magazine</span></p>
+                                </div>
+                                <span class="badge badge-overdue rounded-pill px-3 py-1"><i class="bi bi-exclamation-triangle me-1"></i>Overdue</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-3 mt-2 small">
+                                <span class="text-muted"><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>May 25, 2026</b></span>
+                                <span class="text-danger fw-semibold"><i class="bi bi-calendar-x me-1"></i>Was due: <b>Jun 8, 2026</b></span>
+                                <span class="text-danger fw-semibold"><i class="bi bi-alarm me-1"></i>11 days overdue</span>
+                            </div>
+                            <div class="alert alert-danger py-2 px-3 mt-2 mb-0 small d-flex align-items-center gap-2">
+                                <i class="bi bi-info-circle-fill"></i>
+                                Please return this document immediately to avoid additional penalties.
+                            </div>
+                            <div class="d-flex gap-2 mt-3 flex-wrap">
+                                <button class="btn btn-sm btn-danger rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#returnModal"
+                                        data-title="IEEE Spectrum – March 2026">
+                                    <i class="bi bi-arrow-return-left me-1"></i>Return Now
+                                </button>
+                                <button class="btn btn-sm btn-warning rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#renewalModal"
+                                        data-title="IEEE Spectrum – March 2026"
+                                        data-return="Jun 8, 2026" data-id="BR-20260525-004" data-renewcount="0">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Renew
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
+                                        data-id="BR-20260525-004" data-title="IEEE Spectrum – March 2026" data-status="Overdue"
+                                        data-borrow="May 25, 2026" data-return="Jun 8, 2026" data-branch="Uptown B" data-type="Magazine">
+                                    <i class="bi bi-eye me-1"></i>Detail
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <span class="badge badge-pending rounded-pill px-3 py-1"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
                 </div>
-                <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
-                    <span><i class="bi bi-calendar-check me-1"></i>Requested: <b>Jun 15, 2026</b></span>
-                    <span><i class="bi bi-calendar-x me-1"></i>Expected return: <b>Jun 29, 2026</b></span>
+            }
+            else if (item.BorrowStatus == Services.Enums.BorrowStatus.Returned)
+            {
+                <div class="card borrow-card" data-status="returned" style="opacity:.85;">
+                    <div class="card-body d-flex gap-3 align-items-start p-3">
+                        <div class="doc-cover" style="background:#f3f4f6;color:#9ca3af;"><i class="bi bi-book"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold text-muted">The Pragmatic Programmer</h6>
+                                    <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Downtown A &nbsp;·&nbsp; <span class="badge badge-type">Book</span></p>
+                                </div>
+                                <span class="badge badge-returned rounded-pill px-3 py-1"><i class="bi bi-check2 me-1"></i>Returned</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
+                                <span><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>May 1, 2026</b></span>
+                                <span><i class="bi bi-calendar-x me-1"></i>Returned: <b>May 15, 2026</b></span>
+                            </div>
+                            <div class="d-flex gap-2 mt-3 flex-wrap">
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
+                                        data-id="BR-20260501-005" data-title="The Pragmatic Programmer" data-status="Returned"
+                                        data-borrow="May 1, 2026" data-return="May 15, 2026" data-branch="Downtown A" data-type="Book">
+                                    <i class="bi bi-eye me-1"></i>Detail
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <i class="bi bi-arrow-repeat me-1"></i>Borrow Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex gap-2 mt-3 flex-wrap">
-                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="cancelRequest(this)">
-                        <i class="bi bi-x-circle me-1"></i>Cancel Request
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
-                            data-id="BR-20260615-002" data-title="Annual ICT Industry Report 2025" data-status="Pending"
-                            data-borrow="Jun 15, 2026" data-return="Jun 29, 2026" data-branch="Uptown B" data-type="Report">
-                        <i class="bi bi-eye me-1"></i>Detail
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- ACTIVE 1 -->
-    <div class="card borrow-card" data-status="active">
-        <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="doc-cover" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46;"><i class="bi bi-file-earmark-text"></i></div>
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">Deep Learning Approaches for Natural Language Processing</h6>
-                        <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Westside C &nbsp;·&nbsp; <span class="badge badge-type">Thesis</span></p>
+            }
+            else if (item.BorrowStatus == Services.Enums.BorrowStatus.Cancel)
+            {
+                <div class="card borrow-card" data-status="cancelled" style="opacity:.75;">
+                    <div class="card-body d-flex gap-3 align-items-start p-3">
+                        <div class="doc-cover" style="background:#f3f4f6;color:#9ca3af;"><i class="bi bi-book"></i></div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold text-muted">Software Architecture Patterns</h6>
+                                    <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Central Library &nbsp;·&nbsp; <span class="badge badge-type">Book</span></p>
+                                </div>
+                                <span class="badge badge-cancelled rounded-pill px-3 py-1"><i class="bi bi-x-circle me-1"></i>Cancelled</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
+                                <span><i class="bi bi-calendar-check me-1"></i>Requested: <b>Jun 18, 2026</b></span>
+                                <span><i class="bi bi-calendar-x me-1"></i>Cancelled: <b>Jun 19, 2026</b></span>
+                            </div>
+                            <div class="d-flex gap-2 mt-3 flex-wrap">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <i class="bi bi-eye me-1"></i>Detail
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <span class="badge badge-active rounded-pill px-3 py-1"><i class="bi bi-book-fill me-1"></i>Active</span>
                 </div>
-                <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
-                    <span><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>Jun 5, 2026</b></span>
-                    <span><i class="bi bi-calendar-x me-1"></i>Due: <b class="text-warning">Jun 22, 2026</b></span>
-                    <span class="text-warning fw-semibold"><i class="bi bi-clock me-1"></i>3 days left</span>
-                </div>
-                <div class="mt-2">
-                    <div class="progress" style="height:5px; border-radius:3px;">
-                        <div class="progress-bar bg-warning" style="width:75%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-1" style="font-size:.7rem; color:#9ca3af;">
-                        <span>Jun 5</span><span>Jun 22</span>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 mt-2 flex-wrap">
-                    <button class="btn btn-sm btn-success rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#returnModal"
-                            data-title="Deep Learning Approaches for Natural Language Processing">
-                        <i class="bi bi-arrow-return-left me-1"></i>Return
-                    </button>
-                    <button class="btn btn-sm btn-warning rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#renewalModal"
-                            data-title="Deep Learning Approaches for Natural Language Processing"
-                            data-return="Jun 22, 2026" data-id="BR-20260605-003" data-renewcount="1">
-                        <i class="bi bi-arrow-clockwise me-1"></i>Renew
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
-                            data-id="BR-20260605-003" data-title="Deep Learning Approaches for NLP" data-status="Active"
-                            data-borrow="Jun 5, 2026" data-return="Jun 22, 2026" data-branch="Westside C" data-type="Thesis">
-                        <i class="bi bi-eye me-1"></i>Detail
-                    </button>
-                </div>
+            }
+        }
+    }
+else
+    {
+        <div class="empty-state-container">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
             </div>
+            <h5 class="empty-state-title">No Borrow Records Yet</h5>
         </div>
-    </div>
-
-    <!-- OVERDUE -->
-    <div class="card borrow-card overdue-row" data-status="overdue">
-        <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="doc-cover" style="background:linear-gradient(135deg,#fee2e2,#fecaca);color:#dc2626;"><i class="bi bi-newspaper"></i></div>
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">IEEE Spectrum – March 2026</h6>
-                        <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Uptown B &nbsp;·&nbsp; <span class="badge badge-type">Magazine</span></p>
-                    </div>
-                    <span class="badge badge-overdue rounded-pill px-3 py-1"><i class="bi bi-exclamation-triangle me-1"></i>Overdue</span>
-                </div>
-                <div class="d-flex flex-wrap gap-3 mt-2 small">
-                    <span class="text-muted"><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>May 25, 2026</b></span>
-                    <span class="text-danger fw-semibold"><i class="bi bi-calendar-x me-1"></i>Was due: <b>Jun 8, 2026</b></span>
-                    <span class="text-danger fw-semibold"><i class="bi bi-alarm me-1"></i>11 days overdue</span>
-                </div>
-                <div class="alert alert-danger py-2 px-3 mt-2 mb-0 small d-flex align-items-center gap-2">
-                    <i class="bi bi-info-circle-fill"></i>
-                    Please return this document immediately to avoid additional penalties.
-                </div>
-                <div class="d-flex gap-2 mt-3 flex-wrap">
-                    <button class="btn btn-sm btn-danger rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#returnModal"
-                            data-title="IEEE Spectrum – March 2026">
-                        <i class="bi bi-arrow-return-left me-1"></i>Return Now
-                    </button>
-                    <button class="btn btn-sm btn-warning rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#renewalModal"
-                            data-title="IEEE Spectrum – March 2026"
-                            data-return="Jun 8, 2026" data-id="BR-20260525-004" data-renewcount="0">
-                        <i class="bi bi-arrow-clockwise me-1"></i>Renew
-                    </button>
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
-                            data-id="BR-20260525-004" data-title="IEEE Spectrum – March 2026" data-status="Overdue"
-                            data-borrow="May 25, 2026" data-return="Jun 8, 2026" data-branch="Uptown B" data-type="Magazine">
-                        <i class="bi bi-eye me-1"></i>Detail
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RETURNED 1 -->
-    <div class="card borrow-card" data-status="returned" style="opacity:.85;">
-        <div class="card-body d-flex gap-3 align-items-start p-3">
-            <div class="doc-cover" style="background:#f3f4f6;color:#9ca3af;"><i class="bi bi-book"></i></div>
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div>
-                        <h6 class="mb-1 fw-semibold text-muted">The Pragmatic Programmer</h6>
-                        <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>Downtown A &nbsp;·&nbsp; <span class="badge badge-type">Book</span></p>
-                    </div>
-                    <span class="badge badge-returned rounded-pill px-3 py-1"><i class="bi bi-check2 me-1"></i>Returned</span>
-                </div>
-                <div class="d-flex flex-wrap gap-3 mt-2 small text-muted">
-                    <span><i class="bi bi-calendar-check me-1"></i>Borrowed: <b>May 1, 2026</b></span>
-                    <span><i class="bi bi-calendar-x me-1"></i>Returned: <b>May 15, 2026</b></span>
-                </div>
-                <div class="d-flex gap-2 mt-3 flex-wrap">
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#detailModal"
-                            data-id="BR-20260501-005" data-title="The Pragmatic Programmer" data-status="Returned"
-                            data-borrow="May 1, 2026" data-return="May 15, 2026" data-branch="Downtown A" data-type="Book">
-                        <i class="bi bi-eye me-1"></i>Detail
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                        <i class="bi bi-arrow-repeat me-1"></i>Borrow Again
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+    }

@@ -25,8 +25,8 @@ namespace Client.Controllers
             return View();
         }
 
-        [HttpGet("GetList")]
-        public async Task<IActionResult> GetListAsync(GetListDocumentBorrow query)
+        [HttpPost("GetListBorrow")]
+        public async Task<IActionResult> GetListAsync([FromBody] GetListDocumentBorrow query)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userIdString, out Guid userId))
