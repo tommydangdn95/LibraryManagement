@@ -12,5 +12,6 @@ namespace Services.Applications
         public Task<IResult> CreateBorrowRequest(CreateBorrowRequest request, Guid submitUserId);
         public Task<IResultData<BorrowRequestViewItem>> GetDetailBorrowRequestItem(Guid borrowRequestItem);
         public Task<IResultData<DocumentBorrowListItem>> GetBorrowDocumentByUser(GetListDocumentBorrow request, Guid userId);
+        public Task<IResultData<BorrowRequestIndex>> GetBorrowStatusCount();
     }
 }

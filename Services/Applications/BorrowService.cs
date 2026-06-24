@@ -121,6 +121,24 @@ namespace Services.Applications
             return ResultData<BorrowRequestList>.SuccessData("Get list item successfully", borrowRequestListItem);
         }
 
+        public async Task<IResultData<BorrowRequestIndex>> GetBorrowStatusCount()
+        {
+            var totalSubmitRequest = await _borrowRepository.GetBorrowCount(BorrowStatus.SubmitRequest);
+            var totalBorrowing = await _borrowRepository.GetBorrowCount(BorrowStatus.Borrowing);
+            var totalOverdue = await  _borrowRepository.GetBorrowCount(BorrowStatus.Overdue);
+            var totalReturned = await _borrowRepository.GetBorrowCount(BorrowStatus.Returned);
+
+            var result = new BorrowRequestIndex()
+            {
+                TotalSubmitRequest = totalSubmitRequest,
+                TotalBorrowing = totalBorrowing,
+                TotalOverdue = totalOverdue,
+                TotalReturned = totalReturned
+            };
+
+            return ResultData<BorrowRequestIndex>.SuccessData("Get count list successfully", result);
+        }
+
         public async Task<IResultData<BorrowRequestViewItem>> GetDetailBorrowRequestItem(Guid borrowRequestItem)
         {
             var borrowRequest = await _borrowRepository.GetBorrowDetailById(borrowRequestItem);

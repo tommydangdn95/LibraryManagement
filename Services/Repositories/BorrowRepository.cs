@@ -191,6 +191,12 @@ namespace Services.Repositories
 
         }
 
+        public async Task<int> GetBorrowCount(BorrowStatus borrowStatus)
+        {
+            var count = await _dbContext.BorrowRequest.Where(x => !x.IsDeleted && x.BorrowStatus == borrowStatus).CountAsync();
+            return count;
+        }
+
         #endregion
     }
 }

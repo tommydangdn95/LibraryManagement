@@ -19,9 +19,10 @@ namespace Client.Controllers
             this._borrowService = borrowService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var result = await _borrowService.GetBorrowStatusCount();
+            return View(result.Data);
         }
 
         [HttpPost("GetListBorrow")]

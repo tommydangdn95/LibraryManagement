@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
+@using Services.ViewModels.Clients._BorrowViewModels
+@model BorrowRequestIndex
 
 
 @section Styles {
@@ -21,7 +23,7 @@
         <div class="card stat-card p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#e0e7ff;"><i class="bi bi-hourglass-split" style="color:#4338ca;"></i></div>
-                <div><div class="fw-bold fs-4 lh-1">3</div><div class="text-muted small">Pending</div></div>
+                <div><div class="fw-bold fs-4 lh-1">@Model.TotalSubmitRequest</div><div class="text-muted small">Pending</div></div>
             </div>
         </div>
     </div>
@@ -29,7 +31,7 @@
         <div class="card stat-card p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#d1fae5;"><i class="bi bi-book-fill" style="color:#065f46;"></i></div>
-                <div><div class="fw-bold fs-4 lh-1">5</div><div class="text-muted small">Active</div></div>
+                <div><div class="fw-bold fs-4 lh-1">@Model.TotalBorrowing</div><div class="text-muted small">Borrowing</div></div>
             </div>
         </div>
     </div>
@@ -37,7 +39,7 @@
         <div class="card stat-card p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#fee2e2;"><i class="bi bi-exclamation-triangle-fill" style="color:#dc2626;"></i></div>
-                <div><div class="fw-bold fs-4 lh-1">1</div><div class="text-muted small">Overdue</div></div>
+                <div><div class="fw-bold fs-4 lh-1">@Model.TotalOverdue</div><div class="text-muted small">Overdue</div></div>
             </div>
         </div>
     </div>
@@ -45,7 +47,7 @@
         <div class="card stat-card p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="stat-icon" style="background:#f3f4f6;"><i class="bi bi-check2-circle" style="color:#6b7280;"></i></div>
-                <div><div class="fw-bold fs-4 lh-1">24</div><div class="text-muted small">Returned</div></div>
+                <div><div class="fw-bold fs-4 lh-1">@Model.TotalReturned</div><div class="text-muted small">Returned</div></div>
             </div>
         </div>
     </div>
