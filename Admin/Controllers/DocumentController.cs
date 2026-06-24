@@ -34,8 +34,8 @@ namespace Admin.Controllers
         {
             var vm = new CreateDocument();
             vm.ListDocumentType = EnumHelper.ToSelectList<DocumentType>();
-            var listBranches = await _branchService.GetAllBranchAsync();
-            vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
+            var listBranches = await _branchService.GetListBranchAsync();
+            vm.ListBranches = listBranches.Data.Items.Select(b => new SelectListItem
             {
                 Value = b.BranchId.ToString(),
                 Text = b.Name
@@ -91,8 +91,8 @@ namespace Admin.Controllers
             vm.DocumentTypeId = (int)resultData.Data.DocumentType;
             vm.DocumentStatusId = (int)resultData.Data.DocumentStatus;
 
-            var listBranches = await _branchService.GetAllBranchAsync();
-            vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
+            var listBranches = await _branchService.GetListBranchAsync();
+            vm.ListBranches = listBranches.Data.Items.Select(b => new SelectListItem
             {
                 Value = b.BranchId.ToString(),
                 Text = b.Name,

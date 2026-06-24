@@ -47,33 +47,43 @@ namespace Services.Applications
             return Result.Success("Delete branch successfully");
         }
 
-        public async Task<IResultData<List<BranchItemDto>>> GetAllBranchAsync()
+        public async Task<IResultData<BranchList>> GetListBranchAsync(GetListBranch query = null)
         {
-            var pageResults = await _branchRepository.GetAllAsync();
-
-            var branchDtos = pageResults.Items.Select(b => new BranchItemDto
+            query = query == null ? new GetListBranch() : query;
+            var criteria = new GetListBranchCriteria()
             {
-                BranchId = b.Id,
-                Name = b.Name,
-                Address = b.Address,
-                Phone = b.Phone,
-                Email = b.Email,
-                Description = b.Description,
-                IsActive = b.IsActive
-            }).ToList();
+                Page = query.Page,
+                RowsPerPage = query.RowsPerPage
+            };
 
-            return ResultData<List<BranchItemDto>>.SuccessData("Get all list branch successfully", branchDtos);
+            var pageResults = await _branchRepository.GetListBranchAsync(criteria);
+            var branchList = new BranchList()
+            {
+                Items = pageResults.Items.Select(b => new BranchItem
+                {
+                    BranchId = b.Id,
+                    Name = b.Name,
+                    Address = b.Address,
+                    Phone = b.Phone,
+                    Email = b.Email,
+                    Description = b.Description,
+                    IsActive = b.IsActive
+                }).ToList(),
+                Paging = Paging.GetPaging(query.Page, query.RowsPerPage, pageResults.TotalCount)
+            };
+
+            return ResultData<BranchList>.SuccessData("Get all list branch successfully", branchList);
         }
 
-        public async Task<IResultData<BranchItemDto>> GetBranchItemByIdAsync(Guid branchId)
+        public async Task<IResultData<BranchItem>> GetBranchItemByIdAsync(Guid branchId)
         {
             var branch = await _branchRepository.GetById(branchId);
             if (branch == null)
             {
-                return ResultData<BranchItemDto>.Failed("Could not found branch");
+                return ResultData<BranchItem>.Failed("Could not found branch");
             }
 
-            var item = new BranchItemDto
+            var item = new BranchItem
             {
                 BranchId = branch.Id,
                 Name = branch.Name,
@@ -84,7 +94,7 @@ namespace Services.Applications
                 IsActive = branch.IsActive
             };
 
-            return ResultData<BranchItemDto>.SuccessData("Get branch successfully", item);
+            return ResultData<BranchItem>.SuccessData("Get branch successfully", item);
 
         }
 

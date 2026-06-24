@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Services.Dtos;
+using Services.Dtos.ApplicationDtos._Branch;
 using Services.Models;
 using System;
 using System.Collections.Generic;
@@ -39,9 +40,14 @@ namespace Services.Repositories
             return result;
         }
 
-        public async Task<PagedResult<Branch>> GetAllAsync()
+        public async Task<PagedResult<Branch>> GetListBranchAsync(GetListBranchCriteria criteria)
         {
-            var branches = await _appDbContext.Branchs.Where(x => !x.IsDeleted).ToListAsync();
+            var branches = await _appDbContext.Branchs.Where(x => !x.IsDeleted)
+                        .Distinct()
+                        .Skip((criteria.Page - 1) * criteria.Page)
+                        .Take(criteria.RowsPerPage)
+                        .ToListAsync();
+
             if (!branches.Any())
             {
                 return PagedResult<Branch>.Empty();

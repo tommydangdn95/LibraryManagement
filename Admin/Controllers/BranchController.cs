@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Applications;
 using Services.Consts;
 using Services.ViewModels._BranchViewModels;
+using Services.ViewModels._DocumentViewModels;
 using System.Security.Claims;
 
 namespace Admin.Controllers
@@ -20,6 +21,13 @@ namespace Admin.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet("getlist")]
+        public async Task<IActionResult> GetList(GetListBranch query)
+        {
+            var result = await _branchService.GetListBranchAsync(query);
+            return PartialView("_ListBranch", result.Data);
         }
 
         [HttpGet("create")]
