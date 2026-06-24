@@ -13,5 +13,7 @@ namespace Services.Applications
     {
         public Task<IResultData<AppUser>> GetUserByIdAsync(Guid userId);
         public Task<IResultData<Guid>> CreateUser(CreateUser createUser);
+        public Task<IResultData<UserList>> GetUserList(GetUserList query);
+        public Task<IResultData<UserItem>> GetUserViewByIdAsync(Guid userId);
     }
 }

@@ -30,8 +30,8 @@ namespace Client.Controllers
         public async Task<IActionResult> Index()
         {
             var vm = new DocumentListQuery();
-            var result = await _branchService.GetAllBranchAsync();
-            vm.BranchListItem = result.Data.Select(x => new SelectListItem
+            var result = await _branchService.GetListBranchAsync();
+            vm.BranchListItem = result.Data.Items.Select(x => new SelectListItem
             {
                 Value = x.BranchId.ToString(),
                 Text = x.Name
@@ -53,6 +53,7 @@ namespace Client.Controllers
             }
 
             var result = await _documentService.GetListDocument(query);
+            result.Data.Items = result.Data.Items.OrderByDescending(x => x.IsAvaiableBorrowRequest).ToList();
             return PartialView("_ListDocument", result.Data);
         }
 

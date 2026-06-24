@@ -23,7 +23,7 @@ namespace Services.ViewModels.Clients._BorrowViewModels
         {
             get
             {
-                return PublishDate.ToString("MMM dd, yyyy");
+                return PublishDate.ToString("dd-MM-yyyy");
             }
         }
 
@@ -44,7 +44,7 @@ namespace Services.ViewModels.Clients._BorrowViewModels
             {
                 if (BorrowDate.HasValue)
                 {
-                    return this.BorrowDate.Value.ToString("MMM dd, yyyy");
+                    return this.BorrowDate.Value.ToString("dd-MM-yyyy");
                 }
 
                 return "N/A";
@@ -58,7 +58,7 @@ namespace Services.ViewModels.Clients._BorrowViewModels
             {
                 if (ReturnDate.HasValue)
                 {
-                    return this.ReturnDate.Value.ToString("MMM dd, yyyy");
+                    return this.ReturnDate.Value.ToString("dd-MM-yyyy");
                 }
 
                 return "N/A";

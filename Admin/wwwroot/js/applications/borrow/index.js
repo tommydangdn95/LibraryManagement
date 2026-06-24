@@ -7,6 +7,12 @@
         const borrowDetailId = $(this).data('borrowDetailId');
         const borrowStatus = $(this).data('borrowStatus');
         const activeBorrowStatus = $(this).data('activeBorrowStatusTab');
+
+        let convertBorrowStatus = null;
+        if (activeBorrowStatus !== "") {
+            convertBorrowStatus = Number(activeBorrowStatus);
+        } 
+
         const result = await getBorrowRequestDetailItem(borrowDetailId);
         $('#borrowConfirmContent').html(result);
 
@@ -26,9 +32,8 @@
                         icon: "success"
                     });
 
+                    await getListBorrowRequest(convertBorrowStatus);
                     $("#borrowConfirmModal").modal('hide');
-
-                    await getListBorrowRequest(activeBorrowStatus);
                     return;
                 }
 

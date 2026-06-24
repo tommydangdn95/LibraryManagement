@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Consts;
 using Services.Dtos;
 using Services.Enums;
+using Services.Models;
 using Services.Models._Users;
 using Services.Utils;
 using Services.ViewModels._UserViewModels;
@@ -13,15 +15,12 @@ namespace Services.Applications
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
-        public UserService(UserManager<AppUser> userManager)
+        private readonly RoleManager<AppRole> _roleManager;
+        private readonly AppDbContext _appDbContext;
+        public UserService(UserManager<AppUser> userManager, AppDbContext appDbContext)
         {
             this._userManager = userManager;
-        }
-
-        public async Task<AppUser> GetUserById(Guid userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            return user;
+            this._appDbContext = appDbContext;
         }
 
         public async Task<IResultData<Guid>> CreateUser(CreateUser createUser)
@@ -77,6 +76,75 @@ namespace Services.Applications
             }
 
             return ResultData<AppUser>.SuccessData("Get user successfully", user);
+        }
+
+        public async Task<IResultData<UserList>> GetUserList(GetUserList request)
+        {
+            var query = from user in _appDbContext.Users
+                        join userRole in _appDbContext.UserRoles
+                           on user.Id equals userRole.UserId
+                        join role in _appDbContext.Roles
+                            on userRole.RoleId equals role.Id
+
+                        where user.IsActive
+                        select new { user, role };
+
+            var count = await query.Select(x => x.user.Id)
+                                    .Distinct()
+                                    .CountAsync();
+
+            var listUser = await query.Select(x => new UserItem()
+            {
+                UserId = x.user.Id,
+                Email = x.user.Email,
+                FullName = x.user.FullName,
+                Phone = x.user.PhoneNumber,
+                UserName = x.user.UserName,
+                Role = x.role.Name
+            })
+            .Distinct()
+            .Skip((request.Page - 1) * request.Page)
+            .Take(request.RowsPerPage)
+            .ToListAsync();
+
+            var userListView = new UserList()
+            {
+                Items = listUser,
+                Paging = Paging.GetPaging(request.Page, request.RowsPerPage, count)
+            };
+
+            return ResultData<UserList>.SuccessData("Get list user successfully", userListView);
+        }
+
+        public async Task<IResultData<UserItem>> GetUserViewByIdAsync(Guid userId)
+        {
+            var query = from user in _appDbContext.Users
+                        join userRole in _appDbContext.UserRoles
+                           on user.Id equals userRole.UserId
+                        join role in _appDbContext.Roles
+                            on userRole.RoleId equals role.Id
+
+                        where user.IsActive && user.Id == userId
+                        select new { user, role };
+
+            var result = await query.FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return ResultData<UserItem>.Failed("Failed to fetch user");
+            }
+
+            var userItem = new UserItem()
+            {
+                UserId = result.user.Id,
+                Email = result.user.Email,
+                FullName = result.user.FullName,
+                Phone = result.user.PhoneNumber,
+                Role = result.role.Name,
+                RoleId = result.role.Id,
+                UserName = result.user.UserName
+            };
+
+            return ResultData<UserItem>.SuccessData("Get user successfully", userItem);
         }
     }
 }

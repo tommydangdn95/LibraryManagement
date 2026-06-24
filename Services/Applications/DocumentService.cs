@@ -74,7 +74,7 @@ namespace Services.Applications
                 return Result.Failed("Could not update document");
             }
 
-            return Result.Failed("Update document successfully");
+            return Result.Success("Update document successfully");
         }
 
         public async Task<IResult> DeleteAsync(Guid deleteDocumentId, Guid submitUserId)
@@ -105,6 +105,7 @@ namespace Services.Applications
             var item = new DocumentItemAdmin()
             {
                 Id = document.Id,
+                BranchId = document.BranchId,
                 Title = document.Title,
                 DocumentStatus = document.DocumentStatus,
                 DocumentType = document.DocumentType,

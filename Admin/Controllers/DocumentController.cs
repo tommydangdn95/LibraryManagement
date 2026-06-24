@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using Services.Applications;
 using Services.Consts;
+using Services.Dtos.Apis;
 using Services.Enums;
 using Services.Utils;
 using Services.ViewModels._DocumentViewModels;
@@ -126,6 +128,37 @@ namespace Admin.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteDocumentAsync([FromBody] DeleteDocument deleteDocument)
+        {
+            if (string.IsNullOrEmpty(deleteDocument.DocumentId))
+            {
+                return BadRequest(new ApiErrorResponse<string>
+                                (
+                                     "Invalid document id",
+                                     StatusCodes.Status400BadRequest
+                                ));
+            }
+
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            var result = await _documentService.DeleteAsync(Guid.Parse(deleteDocument.DocumentId), userId);
+            if (!result.IsSuccess)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResponse<string>
+                                (
+                                     result.Message,
+                                     StatusCodes.Status500InternalServerError
+                                ));
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new ApiCommandResponse(result.Message, StatusCodes.Status200OK));
         }
 
 

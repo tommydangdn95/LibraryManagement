@@ -23,7 +23,7 @@ namespace Services.ViewModels.Clients._DocumentViewModels
         {
             get
             {
-                return PublishDate.ToString("MMM/yyyy");
+                return PublishDate.ToString("dd-MM-yyyy");
             }
         }
 

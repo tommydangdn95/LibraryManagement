@@ -1,10 +1,11 @@
 ﻿@using Services.ViewModels.Clients._BorrowViewModels
+@using Services.Enums
 @model CreateBorrowRequest
 
 
 <!-- Header -->
 <div class="modal-header">
-    <h5 class="modal-title fw-semibold" id="borrowModalLabel">
+    <h5 class="modal-title fw-semibold" id="borrowModalLabel" style="color: white;">
         <i class="bi bi-send me-2"></i>Borrow Request
     </h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -14,18 +15,53 @@
 <div class="modal-body p-4">
 
     <!-- Document info -->
-    <div class="borrow-doc-info d-flex gap-3 align-items-center mb-4">
-        <div class="borrow-doc-cover" id="modalDocCover">
-            <i class="bi bi-book" id="modalDocIcon"></i>
-        </div>
-        <div>
-            <div class="fw-semibold" id="modalDocTitle">@Model.DocumentTitle</div>
-            <div class="small text-muted mt-1">
-                <span class="badge badge-type me-1" id="modalDocType">@Model.DocumentType.ToString()</span>
-                <i class="bi bi-geo-alt me-1"></i><span id="modalDocBranch">@Model.BranchName</span>
+    @if (Model.DocumentType == DocumentType.Book.ToString()) 
+    {
+        <div class="borrow-doc-info d-flex gap-3 align-items-center mb-4">
+            <div class="borrow-doc-cover" id="modalDocCover">
+                <i class="bi bi-book" id="modalDocIcon"></i>
+            </div>
+            <div>
+                <div class="fw-semibold" id="modalDocTitle">@Model.DocumentTitle</div>
+                <div class="small text-muted mt-1">
+                    <span class="badge badge-type me-1" id="modalDocType">@Model.DocumentType.ToString()</span>
+                    <i class="bi bi-geo-alt me-1"></i><span id="modalDocBranch">@Model.BranchName</span>
+                </div>
             </div>
         </div>
-    </div>
+    }
+    else if (Model.DocumentType == DocumentType.NewsPaper.ToString())
+    {
+        <div class="borrow-doc-info d-flex gap-3 align-items-center mb-4">
+            <div class="borrow-doc-cover" id="modalDocCover" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">
+                <i class="bi bi-newspaper" id="modalDocIcon" style="color:#be185d;"></i>
+            </div>
+            <div>
+                <div class="fw-semibold" id="modalDocTitle">@Model.DocumentTitle</div>
+                <div class="small text-muted mt-1">
+                    <span class="badge badge-type me-1" id="modalDocType">@Model.DocumentType.ToString()</span>
+                    <i class="bi bi-geo-alt me-1"></i><span id="modalDocBranch">@Model.BranchName</span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="borrow-doc-info d-flex gap-3 align-items-center mb-4">
+            <div class="borrow-doc-cover" id="modalDocCover" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">
+                <i class="bi bi-file-earmark-text" style="color:#065f46;"></i>
+            </div>
+            <div>
+                <div class="fw-semibold" id="modalDocTitle">@Model.DocumentTitle</div>
+                <div class="small text-muted mt-1">
+                    <span class="badge badge-type me-1" id="modalDocType">@Model.DocumentType.ToString()</span>
+                    <i class="bi bi-geo-alt me-1"></i><span id="modalDocBranch">@Model.BranchName</span>
+                </div>
+            </div>
+        </div>
+    }
+
+    
 
     <!-- Date range -->
     <div class="row g-3 mb-3">

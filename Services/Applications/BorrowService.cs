@@ -176,6 +176,11 @@ namespace Services.Applications
             }
 
             var parseBorrowStatus = updateBorrowRequest.BorrowStatus.ToEnum<BorrowStatus>();
+            if (parseBorrowStatus.Value == BorrowStatus.Returned)
+            {
+                borrowRequest.ReturnBranchId = borrowRequest.BorrowBranchId;
+            }
+
             if (parseBorrowStatus.HasValue)
             {
                 borrowRequest.BorrowStatus = parseBorrowStatus.Value;

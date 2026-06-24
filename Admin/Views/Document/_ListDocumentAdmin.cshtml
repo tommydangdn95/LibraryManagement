@@ -9,6 +9,7 @@
                 <th scope="col">Type</th>
                 <th scope="col">Status</th>
                 <th scope="col">Branch</th>
+                <th scope="col">Publish Date</th>
                 <th width="15%"></th>
             </tr>
         </thead>
@@ -20,8 +21,9 @@
                     <td>@item.DocumentType.ToString()</td>
                     <td>@item.DocumentStatus.ToString()</td>
                     <td>@item.Branch</td>
+                    <td>@item.PublishDate.ToString("MM-dd-yyyy")</td>
                     <td>
-                        <a class="btn btn-teal btn-icon" href="/document/edit/@item.Id">
+                        <a class="btn btn-warning btn-icon" href="/document/edit/@item.Id">
                             <i class="fas fa-pencil-square"></i>
                         </a>
                         <a class="btn btn-red btn-icon" onclick="onDeleteDocument('@item.Id')">
