@@ -1,15 +1,4 @@
-﻿var BORROW_STATUS = {
-    cancel: -1,
-    submitRequest: 0,
-    approved: 1,
-    borrowing: 2,
-    returned: 3,
-    overdue: 4,
-    lost: 5,
-}
-
-
-$(function () {
+﻿$(function () {
     onTabClick();
     $("#nav-new-request-tab").click();
 
@@ -107,7 +96,7 @@ function getTableLoad(borrowStatus) {
             return $("#new-request");
         case BORROW_STATUS.approved:
             return $("#nav-approved");
-        case BORROW_STATUS.cancel:
+        case BORROW_STATUS.canceled:
             return $("#nav-cancel");
         case BORROW_STATUS.returned:
             return $("#nav-returned");

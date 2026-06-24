@@ -19,7 +19,6 @@ namespace Client.Controllers
             this._borrowService = borrowService;
         }
 
-
         public IActionResult Index()
         {
             return View();

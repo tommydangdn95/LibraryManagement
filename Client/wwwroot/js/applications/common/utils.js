@@ -1,11 +1,11 @@
 ﻿var BORROW_STATUS = {
-    canceled: -1,
     submitRequest: 0,
     approved: 1,
     borrowing: 2,
     returned: 3,
     overdue: 4,
-    lost: 5,
+    canceled: 5,
+    lost: 6,
 }
 
 

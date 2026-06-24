@@ -20,7 +20,6 @@ namespace Services.Models
         /// </summary>
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<DocumentBranch> DocumentBranchs { get; set; }
         public DbSet<BorrowRequest> BorrowRequest { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

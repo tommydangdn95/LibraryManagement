@@ -43,16 +43,13 @@ namespace Services.Repositories
                         join doc in _dbContext.Documents
                             on borrow.DocumentId equals doc.Id
 
-                        join docB in _dbContext.DocumentBranchs
-                            on doc.Id equals docB.DocumentId
-
                         join branch in _dbContext.Branchs
-                            on docB.BranchId equals branch.Id
+                            on doc.BranchId equals branch.Id
 
                         join user in _dbContext.Users
                             on borrow.BorrowerId equals user.Id
 
-                        where !doc.IsDeleted
+                        where !borrow.IsDeleted
                              && (!criteria.BorrowStatuses.Any() || criteria.BorrowStatuses.Contains(borrow.BorrowStatus))
                         select new { borrow, doc, branch, user  };
 
@@ -105,17 +102,16 @@ namespace Services.Repositories
         public async Task<PagedResult<DocumentItem>> GetBorrowDocumentByUser(GetDocumentListBorrowItemCriteria criteria, Guid userId)
         {
             var query = from doc in _dbContext.Documents
-                        join docB in _dbContext.DocumentBranchs
-                            on doc.Id equals docB.DocumentId
                         join branch in _dbContext.Branchs
-                            on docB.BranchId equals branch.Id
+                            on doc.BranchId equals branch.Id
 
                         join borrow in _dbContext.BorrowRequest
                             on doc.Id equals borrow.DocumentId
 
-                        where !doc.IsDeleted
+                        where !borrow.IsDeleted
                              && borrow.BorrowerId == userId
                              && (!criteria.BorrowStatuses.Any() || criteria.BorrowStatuses.Contains(borrow.BorrowStatus))
+                        orderby borrow.BorrowStatus ascending
                         select new { doc, branch, borrow };
 
             var totalCount = await query
@@ -151,10 +147,8 @@ namespace Services.Repositories
         public async Task<BorrowRequestItem> GetBorrowDetailById(Guid borrowRequestId)
         {
             var query = from doc in _dbContext.Documents
-                        join docB in _dbContext.DocumentBranchs
-                            on doc.Id equals docB.DocumentId
                         join branch in _dbContext.Branchs
-                            on docB.BranchId equals branch.Id
+                            on doc.BranchId equals branch.Id
 
                         join borrow in _dbContext.BorrowRequest
                             on doc.Id equals borrow.DocumentId
@@ -162,8 +156,8 @@ namespace Services.Repositories
                         join user in _dbContext.Users
                         on borrow.BorrowerId equals user.Id
 
-                        where !doc.IsDeleted
-                             && !borrow.IsDeleted
+                        where 
+                            !borrow.IsDeleted
                              && borrow.Id == borrowRequestId
                         select new { doc, user, branch, borrow };
 

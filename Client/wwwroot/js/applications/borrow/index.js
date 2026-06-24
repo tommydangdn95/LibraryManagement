@@ -48,7 +48,7 @@ async function getListBorrowRequest(borrowStatus, page = 1) {
 
     const url = "/borrow/getlistborrow";
     const request = {
-        title: null,
+        title: $("#searchBorrowRequest").val(),
         BorrowStatus: borrowStatus,
         Page: page
     };

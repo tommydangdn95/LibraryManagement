@@ -38,13 +38,6 @@ namespace Services.Repositories
         }
 
 
-        public async Task<bool> CreateDocumentBranch(DocumentBranch documentBranch)
-        {
-            await _dbContext.DocumentBranchs.AddAsync(documentBranch);
-            var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
-        }
-
         public async Task<bool> DeleteAsync(Guid documentId, Guid submitUserId)
         {
             var document = await GetByIdAsync(documentId);
@@ -60,42 +53,11 @@ namespace Services.Repositories
             return await UpdateAsync(document);
         }
 
-        public async Task<bool> UpdateDocumentBranch(Guid documentId, Guid updateBranchId, Guid submitUserId)
-        {
-            var result = await _dbContext.DocumentBranchs.Where(db => db.DocumentId == documentId)
-                                    .ExecuteUpdateAsync(s => s
-                                    .SetProperty(db => db.BranchId, updateBranchId)
-                                    .SetProperty(db => db.UpdatedBy, submitUserId)
-                                    .SetProperty(db => db.UpdatedDate, DateTime.Now));
-            return result > 0;
-        }
-
-        public async Task<bool> UpdateDocumentBranch(DocumentBranch documentBranch)
-        {
-            _dbContext.DocumentBranchs.Update(documentBranch);
-            var result = await _dbContext.SaveChangesAsync();
-            return result > 0;
-        }
-
-
-        public async Task<bool> DeleteDocumentBranch(Guid documentId, Guid submitUserId)
-        {
-            var result = await _dbContext.DocumentBranchs.Where(db => db.DocumentId == documentId)
-                                    .ExecuteUpdateAsync(s => s
-                                     .SetProperty(db => db.IsDeleted, true)
-                                    .SetProperty(db => db.DeleteBy, submitUserId)
-                                    .SetProperty(db => db.DeletedDate, DateTime.Now));
-            return result > 0;
-        }
-
-
         public async Task<PagedResult<DocumentItem>> GetAllAsync(GetDocumentListCriteria criteria)
         {
             var documents = from doc in _dbContext.Documents
-                            join db in _dbContext.DocumentBranchs
-                                on doc.Id equals db.DocumentId
                             join branch in _dbContext.Branchs
-                                on db.BranchId equals branch.Id
+                                on doc.BranchId equals branch.Id
 
                             where !doc.IsDeleted
                             select new { doc, branch };
@@ -114,9 +76,7 @@ namespace Services.Repositories
 
             if (criteria.BranchId.HasValue)
             {
-                documents = documents.Include(d => d.doc.DocumentBranches)
-                                     .ThenInclude(b => b.Branch)
-                                     .Where(x => x.doc.DocumentBranches.Any(b => b.Branch.Id == criteria.BranchId.Value));
+                documents = documents.Where(x => x.doc.BranchId == criteria.BranchId.Value);
             }
 
             var totalCount = await documents.
@@ -146,22 +106,12 @@ namespace Services.Repositories
             return pagedResult;
         }
 
-
-        public async Task<DocumentBranch> GetDocumentBranchAsync(Guid documentId, Guid branchId)
-        {
-            return await _dbContext.DocumentBranchs.FirstOrDefaultAsync(db => db.DocumentId == documentId && db.BranchId == branchId);
-        }
-
-
         #region Client
         public async Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria)
         {
             var documentsQuery = from doc in _dbContext.Documents
-                                 join db in _dbContext.DocumentBranchs
-                                     on doc.Id equals db.DocumentId
-
                                  join branch in _dbContext.Branchs
-                                     on db.BranchId equals branch.Id
+                                     on doc.BranchId equals branch.Id
 
                                  join br in _dbContext.BorrowRequest
                                      on doc.Id equals br.DocumentId into borrowGroup
@@ -169,13 +119,13 @@ namespace Services.Repositories
                                  from borrow in borrowGroup.DefaultIfEmpty()
                                  where 
                                  !doc.IsDeleted
+                                 && !branch.IsDeleted
+                                 orderby doc.DocumentStatus ascending
                                  select new { doc, branch, borrow };
 
             if (criteria.BranchId.HasValue)
             {
-                var documentIdsInBranch = _dbContext.DocumentBranchs.Where(db => db.BranchId == criteria.BranchId.Value)
-                                                    .Select(db => db.DocumentId);
-                documentsQuery = documentsQuery.Where(x => documentIdsInBranch.Contains(x.doc.Id));
+                documentsQuery = documentsQuery.Where(x => x.doc.BranchId == criteria.BranchId.Value);
             }
 
             if (!string.IsNullOrEmpty(criteria.SearchDocumentName))
@@ -227,11 +177,6 @@ namespace Services.Repositories
 
             var pagedResult = new PagedResult<DocumentItem>(items, totalCount, criteria.Page, criteria.RowsPerPage);
             return pagedResult;
-        }
-
-        public Task<DocumentBranch> GetDocumentBranchAsync(Guid documentId)
-        {
-            return _dbContext.DocumentBranchs.FirstOrDefaultAsync(db => db.DocumentId == documentId);
         }
 
         #endregion

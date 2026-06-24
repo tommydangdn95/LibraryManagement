@@ -91,17 +91,13 @@ namespace Admin.Controllers
             vm.DocumentTypeId = (int)resultData.Data.DocumentType;
             vm.DocumentStatusId = (int)resultData.Data.DocumentStatus;
 
-            var resultDocumentBranch = await _documentService.GetDocumentBranch(resultData.Data.Id);
-            if (resultDocumentBranch.IsSuccess)
+            var listBranches = await _branchService.GetAllBranchAsync();
+            vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
             {
-                var listBranches = await _branchService.GetAllBranchAsync();
-                vm.ListBranches = listBranches.Data.Select(b => new SelectListItem
-                {
-                    Value = b.BranchId.ToString(),
-                    Text = b.Name,
-                }).ToList();
-                vm.BranchId = resultDocumentBranch.Data.BranchId;
-            }
+                Value = b.BranchId.ToString(),
+                Text = b.Name,
+            }).ToList();
+            vm.BranchId = resultData.Data.BranchId;
 
             return View("Edit", vm);
         }

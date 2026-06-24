@@ -1,4 +1,14 @@
-﻿async function sendApiRequest(url, request, datatype = 'json', method = 'POST') {
+﻿var BORROW_STATUS = {
+    submitRequest: 0,
+    approved: 1,
+    borrowing: 2,
+    returned: 3,
+    overdue: 4,
+    cancel: 5,
+    lost: 6,
+}
+
+async function sendApiRequest(url, request, datatype = 'json', method = 'POST') {
     return new Promise((resolve, reject) => {
         $.ajax({
             url: url,

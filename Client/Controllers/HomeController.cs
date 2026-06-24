@@ -67,16 +67,11 @@ namespace Client.Controllers
             }
 
             var documentViewItem = documentResult.Data;
-
-            var resultDocumentBranch = await _documentService.GetDocumentBranch(documentViewItem.DocumentId);
-            if (resultDocumentBranch.IsSuccess)
+            var resultBranch = await _branchService.GetBranchItemByIdAsync(documentResult.Data.BranchId);
+            if (resultBranch.IsSuccess)
             {
-                var resultBranch = await _branchService.GetBranchItemByIdAsync(resultDocumentBranch.Data.BranchId);
-                if (resultBranch.IsSuccess)
-                {
-                    documentViewItem.Branch = resultBranch.Data.Name;
-                    documentViewItem.BranchId = resultBranch.Data.BranchId;
-                }
+                documentViewItem.Branch = resultBranch.Data.Name;
+                documentViewItem.BranchId = resultBranch.Data.BranchId;
             }
 
             var borrowRequest = new CreateBorrowRequest()

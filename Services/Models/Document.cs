@@ -10,6 +10,6 @@ namespace Services.Models
         public string? Description { get; set; }
         public string? CoverImageUrl { get; set; }
         public DateTime PublishDate { get; set; }
-        public ICollection<DocumentBranch> DocumentBranches { get; set; }
+        public Guid BranchId { get; set; }
     }
 }

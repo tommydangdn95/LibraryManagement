@@ -32,27 +32,14 @@ namespace Services.Applications
                 PublishDate = createDocument.PublishDate,
                 DocumentType = createDocument.DocumentTypeId.ToEnum<DocumentType>()!.Value,
                 CreatedDate = DateTime.Now,
-                CreatedBy = submitUserId
+                CreatedBy = submitUserId,
+                BranchId = createDocument.BranchId,
             };
 
             var result = await _documentRepository.CreateAsync(document);
             if (!result)
             {
                 return Result.Failed($"Failed to create new document");
-            }
-
-            var documentBranch = new Models.DocumentBranch()
-            {
-                DocumentId = document.Id,
-                BranchId = createDocument.BranchId,
-                CreatedDate = DateTime.Now,
-                CreatedBy = submitUserId
-            };
-
-            result = await _documentRepository.CreateDocumentBranch(documentBranch);
-            if (!result)
-            {
-                return Result.Failed($"Failed to create new document branch");
             }
 
             return Result.Success($"Create new document branch successfully");
@@ -73,6 +60,7 @@ namespace Services.Applications
             document.PublishDate = updateDocument.PublishDate;
             document.UpdatedDate = DateTime.Now;
             document.UpdatedBy = submitUserId;
+            document.BranchId = updateDocument.BranchId;
 
             if (updateDocument.DocumentStatusId.HasValue)
             {
@@ -84,12 +72,6 @@ namespace Services.Applications
             if (!result)
             {
                 return Result.Failed("Could not update document");
-            }
-
-            result = await _documentRepository.UpdateDocumentBranch(updateDocument.DocumenId, updateDocument.BranchId, submitUserId);
-            if (!result)
-            {
-                return Result.Failed("Could not update document branch");
             }
 
             return Result.Failed("Update document successfully");
@@ -108,8 +90,6 @@ namespace Services.Applications
             {
                 return Result.Failed($"Failed to delete document");
             }
-
-            result = await _documentRepository.DeleteDocumentBranch(deleteDocumentId, submitUserId);
 
             return Result.Success($"Delete document successfully");
         }
@@ -155,6 +135,7 @@ namespace Services.Applications
                     Id = x.DocumentId,
                     Branch = x.BranchName,
                     Title = x.DocumentTitle,
+                    BranchId = x.BranchId,
                     Description = x.DocumentDescription,
                     DocumentStatus = x.DocumentStatus,
                     CoverImageUrl = x.CoverImageUrl,
@@ -214,12 +195,6 @@ namespace Services.Applications
             return ResultData<DocumentList>.SuccessData("Get list item successfully", documentList);
         }
 
-        public async Task<IResultData<DocumentBranch>> GetDocumentBranch(Guid documentId)
-        {
-            var item = await _documentRepository.GetDocumentBranchAsync(documentId);
-            return ResultData<DocumentBranch>.SuccessData("Get document branch successfully", item);
-        }
-
         public async Task<IResultData<DocumentViewItem>> GetDocumentViewItem(Guid documentId)
         {
             var document = await _documentRepository.GetByIdAsync(documentId);
@@ -230,6 +205,7 @@ namespace Services.Applications
 
             var item = new DocumentViewItem()
             {
+                BranchId = document.BranchId,
                 DocumentId = document.Id,
                 DocumentTitle = document.Title,
                 DocumentStatus = document.DocumentStatus,

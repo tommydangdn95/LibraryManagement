@@ -12,7 +12,7 @@ using Services.Models;
 namespace Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260618083420_initDb")]
+    [Migration("20260624044448_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -158,13 +158,13 @@ namespace Services.Migrations
                     b.Property<Guid>("BorrowerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DeleteBy")
+                    b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedDate")
@@ -185,7 +185,7 @@ namespace Services.Migrations
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -205,13 +205,13 @@ namespace Services.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DeleteBy")
+                    b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedDate")
@@ -235,7 +235,7 @@ namespace Services.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -252,16 +252,19 @@ namespace Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CoverImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DeleteBy")
+                    b.Property<Guid?>("DeleteBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedDate")
@@ -285,7 +288,7 @@ namespace Services.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -294,48 +297,6 @@ namespace Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("Services.Models.DocumentBranch", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DocumentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.ToTable("DocumentBranchs");
                 });
 
             modelBuilder.Entity("Services.Models._Users.AppRole", b =>
@@ -522,35 +483,11 @@ namespace Services.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Services.Models.DocumentBranch", b =>
-                {
-                    b.HasOne("Services.Models.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Services.Models.Document", "Document")
-                        .WithMany("DocumentBranches")
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("Document");
-                });
-
             modelBuilder.Entity("Services.Models._Users.AppUserRole", b =>
                 {
                     b.HasOne("Services.Models._Users.AppRole", null)
                         .WithMany("UserRoles")
                         .HasForeignKey("AppRoleId");
-                });
-
-            modelBuilder.Entity("Services.Models.Document", b =>
-                {
-                    b.Navigation("DocumentBranches");
                 });
 
             modelBuilder.Entity("Services.Models._Users.AppRole", b =>
