@@ -32,6 +32,14 @@ namespace Services.ViewModels._BorrowViewModels
             }
         }
 
+        public bool IsActiveOverdueTab
+        {
+            get
+            {
+                return BorrowStatus.HasValue && BorrowStatus.Value == (int)Enums.BorrowStatus.Overdue;
+            }
+        }
+
 
         public bool IsActiveCancelTab
         {

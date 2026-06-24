@@ -14,7 +14,14 @@
                     <th scope="col">Borrower</th>
                     <th scope="col">Request Date</th>
                     <th scope="col">Return Date</th>
-                    <th width="15%"></th>
+                    @if (Model.IsActiveAllTab)
+                    {
+                        <th scope="col">Borrow Status</th>
+                    }
+                    @if (!(Model.IsActiveCancelTab || Model.IsActiveReturnedTab))
+                    {
+                        <th width="15%">Action</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -27,16 +34,60 @@
                         <td>@item.BorrowerName</td>
                         <td>@item.RequestDate.ToString("MMM dd, yyyy")</td>
                         <td>@item.ReturnDate.ToString("MMM dd, yyyy")</td>
+                        @if (Model.IsActiveAllTab)
+                        {
+                            <th scope="col">@item.BorrowStatus.ToString()</th>
+                        }
                         @if (Model.IsActiveNewRequestTab || (Model.IsActiveAllTab && item.BorrowStatus == BorrowStatus.SubmitRequest))
                         {
                             <td>
-                                <a class="btn btn-teal btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Approved)')">
+                                <a class="btn btn-success btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Approved)')">
                                     <i class="fas fa-check-circle"></i>
                                 </a>
-                                <a class="btn btn-red btn-icon" onclick="onDecline('@item.BorrowRequestId')">
+                                <a class="btn btn-red btn-icon" onclick="onCancel('@item.BorrowRequestId', '@Model.BorrowStatus')">
                                     <i class="fas fa-ban"></i>
                                 </a>
                             </td>
+                        }
+                        else if (Model.IsActiveApprovedTab || (Model.IsActiveAllTab && item.BorrowStatus == BorrowStatus.Approved))
+                        {
+                            <td>
+                                <a class="btn btn-teal btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Borrowing)')">
+                                    <i class="fas fa-check-circle"></i>
+                                </a>
+                                <a class="btn btn-red btn-icon" onclick="onCancel('@item.BorrowRequestId', '@Model.BorrowStatus')">
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                            </td>
+                        }
+                        else if (Model.IsActiveBorrowingTab || (Model.IsActiveAllTab && item.BorrowStatus == BorrowStatus.Borrowing))
+                        {
+                            <td>
+                                <a class="btn btn-teal btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Returned)')">
+                                    <i class="fas fa-long-arrow-right"></i>
+                                </a>
+                                <a class="btn btn-warning btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Overdue)')">
+                                    <i class="fas fa fa-fire"></i>
+                                </a>
+                                <a class="btn btn-red btn-icon" onclick="onCancel('@item.BorrowRequestId', '@Model.BorrowStatus')">
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                            </td>
+                        }
+                        else if (Model.IsActiveOverdueTab || (Model.IsActiveAllTab && item.BorrowStatus == BorrowStatus.Overdue))
+                        {
+                            <td>
+                                <a class="btn btn-teal btn-icon" onclick="onUpdateBorrowStatus('@item.BorrowRequestId', '@Model.BorrowStatus', '@((int)BorrowStatus.Returned)')">
+                                    <i class="fas fa-long-arrow-right"></i>
+                                </a>
+                                <a class="btn btn-red btn-icon" onclick="onCancel('@item.BorrowRequestId', '@Model.BorrowStatus')">
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
                         }
                     </tr>
                 }

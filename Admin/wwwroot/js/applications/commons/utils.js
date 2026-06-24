@@ -4,7 +4,7 @@
     borrowing: 2,
     returned: 3,
     overdue: 4,
-    cancel: 5,
+    canceled: 5,
     lost: 6,
 }
 
