@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Services.Dtos;
 using Services.Dtos.ApplicationDtos._Document;
 using Services.Enums;
 using Services.Models;
 using Services.Models.Criterias;
+using Services.Repositories.Mapper;
 using Services.Utils;
 using Services.ViewModels._DocumentViewModels;
+using System.Xml.Linq;
 
 namespace Services.Repositories
 {
@@ -109,74 +113,26 @@ namespace Services.Repositories
         #region Client
         public async Task<PagedResult<DocumentItem>> GetListDocumentItem(GetDocumentItemCriteria criteria)
         {
-            var documentsQuery = from doc in _dbContext.Documents
-                                 join branch in _dbContext.Branchs
-                                     on doc.BranchId equals branch.Id
-
-                                 join br in _dbContext.BorrowRequest
-                                     on doc.Id equals br.DocumentId into borrowGroup
-
-                                 from borrow in borrowGroup.DefaultIfEmpty()
-                                 where 
-                                 !doc.IsDeleted
-                                 && !branch.IsDeleted
-                                 orderby doc.DocumentStatus ascending
-                                 select new { doc, branch, borrow };
-
-            if (criteria.BranchId.HasValue)
+            try
             {
-                documentsQuery = documentsQuery.Where(x => x.doc.BranchId == criteria.BranchId.Value);
+                var sqlParams = new List<SqlParameter>
+                {
+                    new SqlParameter("@BranchId", criteria.BranchId),
+                    new SqlParameter("@SearchDocumentName", criteria.SearchDocumentName),
+                    new SqlParameter("@DocumentTypes", criteria.DocumentTypes.Any() ? string.Join(",", criteria.DocumentTypes.Select(x => (int)x)) : null),
+                    new SqlParameter("@StartDate", criteria.StartDate),
+                    new SqlParameter("@EndDate", criteria.EndDate),
+                    new SqlParameter("@Page", criteria.Page),
+                    new SqlParameter("@RowsPerPage", criteria.RowsPerPage),
+                };
+                var queryResult = await _dbContext.ExecutePagedListRead("sp_GetListDocumentItem", sqlParams, DocumentItemMapper.Mapper);
+                return queryResult;
             }
 
-            if (!string.IsNullOrEmpty(criteria.SearchDocumentName))
+            catch(Exception ex)
             {
-                documentsQuery = documentsQuery
-                    .Where(x => x.doc.Title.Contains(criteria.SearchDocumentName));
+                return new PagedResult<DocumentItem>(new List<DocumentItem>(), 0, criteria.Page, criteria.RowsPerPage);
             }
-
-            if (criteria.DocumentTypes.Any())
-            {
-                documentsQuery = documentsQuery.Where(x => criteria.DocumentTypes.Contains(x.doc.DocumentType));
-            }
-
-            if (criteria.StartDate.HasValue)
-            {
-                documentsQuery = documentsQuery.Where(x => x.doc.PublishDate >= criteria.StartDate);
-            }
-
-            if (criteria.EndDate.HasValue)
-            {
-                documentsQuery = documentsQuery.Where(x => x.doc.PublishDate <= criteria.EndDate);
-            }
-
-            var totalCount = await documentsQuery
-                                    .Select(x => x.doc.Id)
-                                    .Distinct()
-                                    .CountAsync();
-
-            var items = await documentsQuery
-                        .Select(x => new DocumentItem
-                        {
-                            DocumentId = x.doc.Id,
-                            BranchId = x.branch.Id,
-                            BranchName = x.branch.Name,
-                            DocumentTitle = x.doc.Title,
-                            DocumentType = x.doc.DocumentType,
-                            DocumentStatus = x.doc.DocumentStatus,
-                            DocumentDescription = x.doc.Description,
-                            CoverImageUrl = x.doc.CoverImageUrl,
-                            PublishDate = x.doc.PublishDate,
-                            BorrowStatus = x.borrow != null ? x.borrow.BorrowStatus : (BorrowStatus?)null,
-                            BorrowDate = x.borrow != null ? x.borrow.BorrowDate : null,
-                            ReturnDate = x.borrow != null ? x.borrow.ReturnDate : null,
-                        })
-                        .Distinct()
-                        .Skip((criteria.Page - 1) * criteria.Page)
-                        .Take(criteria.RowsPerPage)
-                        .ToListAsync();
-
-            var pagedResult = new PagedResult<DocumentItem>(items, totalCount, criteria.Page, criteria.RowsPerPage);
-            return pagedResult;
         }
 
         #endregion

@@ -66,15 +66,9 @@
     })
 
     $("#filterBtn").on('click', async function (e) {
+        e.preventDefault();
         await getListDocument();
     })
-
-    $('#filterBtn').on('keypress', async function (e) {
-        if (e.which == 13) {
-            e.preventDefault();
-            await getListDocument();
-        }
-    });
 })
 
 
